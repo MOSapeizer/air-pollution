@@ -61,23 +61,23 @@ $(document).ready(function(){
 				"fill": function(d){ return color( d.concentration ); }
 			}).on("mouseover", function(d){ 
 				info_box.select("h3").text(d.properties.C_Name);
-			info_box.select("p").text(d.concentration);
-			d3.select(this).attr({ "stroke": "white", "stroke-width": "4" });
+				info_box.select("p").text(d.concentration);
+				d3.select(this).attr({ "stroke": "white", "stroke-width": "4" });
 			}).on("mouseleave", function(d){
 				d3.select(this).attr("stroke", "none");
 			});
 		}
 
 		d3.select("svg").on("mousemove", function(){
-		  	fisheye.focus(d3.mouse(this));
-		  	console.log(this);
-		  	update();
+			fisheye.focus(d3.mouse(this));
+	 	 	update();
 		});
 
-		$("canvas").on("mousemove", function(event){
-			fisheye.focus(d3.mouse());
-		  	console.log(event.pageX);
-		});
+		// $("canvas").on("mousemove", function(event){
+		// 	fisheye.focus([event.pageX, event.pageY]);
+		// 	console.log(event.pageX);
+		//   	update.call(d3.select("svg"));
+		// });
 
 		update();
 
