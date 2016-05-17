@@ -1,5 +1,5 @@
 body {
-	background-color: rgba(145, 120, 100, 0.5);
+	background-color: rgba(80, 80, 80, 0.1);
 }
 
 button {
@@ -31,13 +31,53 @@ button {
 
 .page .description .background {
 	box-sizing: border-box;
+	min-width: 16em;
+	min-height: 38em;
 	width: 90%;
-	height: 90%;
-	margin: 5% 0 0 5%;
-	border-radius: 1em;
+	margin: 5% 0 0 10%;
 	background: white;
+	/*border-radius: 1em;*/
+	/*padding: 2em;*/
+	/*box-shadow: 1px 1px 12px black;*/
+}
+
+.background .text {
+	box-sizing: border-box;
+	min-width: 250px;
+	padding: 1em;
+	/*border: 1px solid black;*/
+	/*box-shadow: 1px 1px 4px 1px black;*/
+}
+
+.page .background .text p {
+	font-size: 1.2em;
+	font-weight: 900;
+}
+
+.page .background .header {
+	background-color: #4d275f;
 	padding: 2em;
-	box-shadow: 1px 1px 12px black;
+	min-width: 250px;
+	box-sizing: border-box;
+}
+
+.background .header h2 {
+	font-size: 1.3em;
+}
+
+.background .header h1 {
+	margin-bottom: 0;
+}
+
+.background .header h1, .background .header h2 {
+	color: white;
+}
+
+
+.header	.title .bottom-line {
+	background-color: white;
+	width: 11em;
+	height: 1em;
 }
 
 .page .content {
