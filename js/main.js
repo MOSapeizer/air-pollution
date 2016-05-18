@@ -35,7 +35,21 @@ $(document).ready(function(){
 		return d3.extent(v);
 	};
 
-	dust_float( width, height);
+	dustTV = new dustAnimation(width, height);
+
+	$(window).scroll(function(){
+		if( $(window).scrollTop() >= height / 2 && $(window).scrollTop() <= height ){
+			if( dustTV.animate_type != "float" ){
+				console.log("start float");
+				dustTV.animate_type = "float";
+				dustTV.start.call( dustTV, dustTV.float );
+			}
+		}
+		else {
+			dustTV.animate_type = "Nothing";
+			dustTV.stop();
+		}
+	})
 
 	var purple_alert = ['#fff' ,'#505'];
 	var color_range = ['#fef0d9' ,'#fdba57', '#fda38a', '#f24249', '#a7050e', '#760207'];

@@ -5,23 +5,75 @@ var textureFactory = function(radius, color, alpha){
 	return circle.generateTexture( 3*3, PIXI.SCALE_MODES.DEFAULT);
 }
 
-var dust_float = function (width, height){
+var bitmap = function( diameter ){
 
-	var dustPanel = new DustPanel(container, width, height, 1000);
-	var container = dustPanel.container;
-	var renderer = dustPanel.renderer;
+	var rectGenerator = function( length ){
+		var rect = new Array( length );
+		for( var i = 0 ; i < length ; i++  )
+			rect[i] = new Array( length );
+		return rect;
+	}
+
+	var Radius = function( x, y ){
+		if( y === undefined )
+			return Math.sqrt( x * x );
+		return Math.sqrt( x * x + y * y );
+	}
+
+	var r = diameter / 2;
+	var bitsRect = rectGenerator( diameter );
+
+	for( var x = 0 ; x < diameter ; x++ ){
+		for( var y = 0 ; y < diameter ; y++ ){
+			// offset = 0.5;
+			bitsRect[x][y] = (Radius(x + 0.5 - r, y + 0.5 - r) <= Radius( r ))? true : false;
+		}
+	}
+
+	return bitsRect;
+}
+
+var dustAnimation = function( width, height ){
+
+	var animate = null;
+	this.dustPanel = new DustPanel(width, height, 1481); 
+	this.float = floatDust.bind( this.dustPanel );
+	this.circlize = dust_circle.bind( this.dustPanel );
+	this.animate_type = "";
+
+	this.play = function(){
+		if( animate != null && typeof(animate) === 'function' ){
+			animate();
+			requestAnimationFrame( this.play.bind(this) );
+		}
+	}
+
+	this.start = function( animation ){
+		animate = animation;
+		this.play.call(this);
+	}
+
+	this.stop = function(){
+		animate = null;
+	}
+
+}
+
+var dust_circle = function(){
+	var container = this.container;
+	var renderer = this.renderer;
 
 	$("body").find(".dust-float").append( renderer.view ); 
-	
-	dustPanel.group.forEach( function(dust){
-		container.addChild( dust );
+
+	this.group.forEach( function(dust){
+		dust.alpha = 1;
 	});
 	
 	// start animating
-	requestAnimationFrame( animateDust.bind( dustPanel ) );
+	// requestAnimationFrame( animateDust.bind( this ) );
 }
 
-var DustPanel = function(container, width, height, total){
+var DustPanel = function(width, height, total){
 
 	var texture = textureFactory( 2, 0x555555, 1 );
 
@@ -37,10 +89,14 @@ var DustPanel = function(container, width, height, total){
 		dust.x = Math.random() * width;
 		dust.y = Math.random() * height;
 		this.group.push(dust);
+		this.container.addChild( dust );
 	}
+
+	// this sholud be more flexible
+	$("body").find(".dust-float").append( this.renderer.view ); 
 }
 
-var animateDust = function(){
+var floatDust = function(){
 
 	var width = this.width;
 	var height = this.height;
@@ -86,7 +142,6 @@ var animateDust = function(){
 	}
 
 	this.renderer.render( this.container );
-	requestAnimationFrame( animateDust.bind(this) );
 }
 
 

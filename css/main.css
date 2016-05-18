@@ -34,9 +34,11 @@ button {
 	box-sizing: border-box;
 	min-width: 16em;
 	max-width: 22em;
-	height: 50em;
+	padding-left: 10%;
+	padding-top: 10%;
+	height: 100%;
 	min-height: 38em;
-	margin: 15% 0 0 10%;
+	
 }
 
 .block .text {
