@@ -37,10 +37,13 @@ $(document).ready(function(){
 
 	dust_float( width, height);
 
+	var purple_alert = ['#fff' ,'#505'];
+	var color_range = ['#fef0d9' ,'#fdba57', '#fda38a', '#f24249', '#a7050e', '#760207'];
+
 	d3.json("data/county.json", function(topodata) {
 		var features = topojson.feature(topodata, topodata.objects["County_MOI_1041215"]).features;
 		var object_range = objectRange( pm25 );
-		var color = d3.scale.linear().domain( object_range ).range(["#090", "#f00"]);
+		var color = d3.scale.quantize().domain( object_range ).range( color_range );
 		var fisheye = d3.fisheye.circular().radius(100).distortion(2);
 		var prj = function(v){
 			 var ret = d3.geo.mercator().center( mapCenter ).scale(8000)(v);

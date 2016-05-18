@@ -1,48 +1,92 @@
-var textureFactory = function(color){
+var textureFactory = function(radius, color, alpha){
 	var circle = new PIXI.Graphics();
-	circle.beginFill( color );
-	circle.drawCircle(3, 3, 2);
+	circle.beginFill( color, alpha );
+	circle.drawCircle(3, 3, radius);
 	return circle.generateTexture( 3*3, PIXI.SCALE_MODES.DEFAULT);
 }
 
 var dust_float = function (width, height){
 
-	var container = new PIXI.ParticleContainer();
-	var renderer = new PIXI.WebGLRenderer(width, height, { "transparent": true });
-	var dustGroup = [];
-	var texture = textureFactory( 0x555555 );
-	var dust_total = 1000;
-	var count = 0;
+	var dustPanel = new DustPanel(container, width, height, 1000);
+	var container = dustPanel.container;
+	var renderer = dustPanel.renderer;
 
 	$("body").find(".dust-float").append( renderer.view ); 
-		
-	for (var i = dust_total - 1; i >= 0; i--) {
-		
+	
+	dustPanel.group.forEach( function(dust){
+		container.addChild( dust );
+	});
+	
+	// start animating
+	requestAnimationFrame( animateDust.bind( dustPanel ) );
+}
+
+var DustPanel = function(container, width, height, total){
+
+	var texture = textureFactory( 2, 0x555555, 1 );
+
+	this.width = width;
+	this.height = height;
+	this.container = new PIXI.ParticleContainer();
+	this.renderer = new PIXI.WebGLRenderer(width, height, { "transparent": true });
+	this.total = total;
+	this.group = [];
+
+	for (var i = this.total - 1; i >= 0; i--) {
 		var dust = new PIXI.Sprite( texture );
 		dust.x = Math.random() * width;
 		dust.y = Math.random() * height;
+		this.group.push(dust);
+	}
+}
 
-		dustGroup.push(dust);
-		container.addChild( dust );
+var animateDust = function(){
+
+	var width = this.width;
+	var height = this.height;
+
+	var updateDustInform = function( dust ){
+		var radius = randomRadius(8);
+		dust.x += randomPosition();
+		dust.y += randomPosition();
+		CheckPosition( dust );
+		dust.height = radius;
+		dust.width = radius;
+		dust.alpha = randomAlpha();
 	}
 
-
-	var animate = function(){
-		var CheckPosition = function( dust ){
-			if( dust.x > width )
-				dust.x = 0;
+	var CheckPosition = function( dust ){
+		if( dust.x > width )
+			dust.x = 0;
+		if( dust.y > height ){
+			dust.y = 0;
 		}
-		for( var i = dust_total -1 ; i >= 0 ; i--  ){
-			var dust = dustGroup[i];
-			dust.x += Math.sin( Math.random() * 0.1 );
-			CheckPosition(dust);
-		}
-		renderer.render( container );
-		requestAnimationFrame(animate);
 	}
 
-	// start animating
-	requestAnimationFrame( animate );
+	var randomRadius = function( base ){
+		return base * Math.random();
+	}
+
+	var randomPosition = function( scale ){
+		if( scale === undefined )
+			scale = Math.random() * 0.2;
+		var num = Math.random() * scale;
+		return Math.sin( num );
+	}
+
+	var randomAlpha = function(){
+		var RANGE_OF_PI = Math.random() * 3.14;
+		var NUM_OF_SIN = Math.sin( RANGE_OF_PI );
+		return Math.abs( NUM_OF_SIN );
+	}
+
+	for( var i = this.total -1 ; i >= 0 ; i--  ){
+		var dust = this.group[i];
+		updateDustInform( dust );
+	}
+
+	this.renderer.render( this.container );
+	requestAnimationFrame( animateDust.bind(this) );
 }
 
 
