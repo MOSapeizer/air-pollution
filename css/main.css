@@ -87,6 +87,7 @@ button {
 	display: inline-block;
 	box-sizing: border-box;
 	float: right;
+	opacity: ;;
 }
 
 .page .content #graph {
