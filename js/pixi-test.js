@@ -126,6 +126,23 @@ var dustAnimation = function( width, height ){
 var DustPanel = function(width, height, total){
 
 	var texture = textureFactory( 10, 0x303030, 0.5 );
+	var sand = bitmap( 36 );
+	var hair = bitmap( 24 );
+	var PM10 = bitmap( 4 );
+	var PM2_5 = bitmap( 1 )
+
+	var add_circle_position = function( bitsRect, count, start ){
+		for( var x = 0 ; x < bitsRect.length ; x++ ){
+			for( var y = 0 ; y < bitsRect[x].length ; y++ ){
+				if( bitsRect[x][y] ){
+					var dust = this.group[count++];
+					dust.circleX = start.x + x * 10;
+					dust.circleY = start.y + y * 10;
+				}
+			}
+		}
+		return count;
+	}
 
 	this.width = width;
 	this.height = height;
@@ -139,14 +156,21 @@ var DustPanel = function(width, height, total){
 		var dust = new PIXI.Sprite( texture );
 		dust.x = Math.random() * width;
 		dust.y = Math.random() * height;
-		dust.circleX = 500;
-		dust.circleY = 400;
+		dust.circleX = dust.circleY = 0;
 		dust.angle = Math.random() * 10;
 		dust.default_radius = Math.random() * 10
 		dust.width = dust.height = dust.default_radius;
 		this.group.push(dust);
 		this.container.addChild( dust );
 	}
+	var index = 0;
+	var baseX = 450;
+	var baseY = 500;
+	var gate = 100;
+	index = add_circle_position.call(this, PM2_5, index, { x: baseX, y: 500 } );
+	index = add_circle_position.call(this, PM10, index, { x: baseX + 1 * gate + 4 * 10 , y: baseY - 3 * 10 } );
+	index = add_circle_position.call(this, hair, index, { x: baseX + 2 * gate + 8 * 10, y: baseY - 23 * 10 } );
+	index = add_circle_position.call(this, sand, index, {x: baseX + 3 * gate + 32 * 10 , y: baseY - 35 * 10} );
 
 	// this sholud be more flexible
 	$("body").find(".dust-float").append( this.renderer.view ); 
@@ -156,6 +180,7 @@ var circlizeDust = function(){
 
 	var updateDustInform = function( dust ){
 		approach_position(dust);
+
 	}
 
 	var approach_position = function( dust ){
@@ -172,7 +197,6 @@ var circlizeDust = function(){
 			else
 				dust.y += dust.stepY;
 		}
-		
 	}
 
 	for( var i = this.total -1 ; i >= 0 ; i--  ){
