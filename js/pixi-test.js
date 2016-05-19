@@ -49,8 +49,11 @@ var dustAnimation = function( width, height ){
 	}
 
 	this.start = function( animation ){
-		animate = animation;
-		this.play.call(this);
+		if( animate != animation ){
+			animate = animation;
+			this.play.call(this); 
+		}
+		return "playing";
 	}
 
 	this.stop = function(){
@@ -125,7 +128,7 @@ var floatDust = function(){
 
 	var randomPosition = function( scale ){
 		if( scale === undefined )
-			scale = Math.random() * 0.2;
+			scale = Math.random() * 0.4;
 		var num = Math.random() * scale;
 		return Math.sin( num );
 	}

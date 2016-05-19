@@ -1,3 +1,9 @@
+var resize_canvas = function() {
+  var canvas = $("canvas");
+  canvas.width( window.innerWidth );
+  canvas.height( window.innerHeight );
+}
+
 $(document).ready(function(){
 	var width = $(".page").width();
 	var height = $(".page").height();
@@ -36,16 +42,16 @@ $(document).ready(function(){
 	};
 
 	dustTV = new dustAnimation(width, height);
+	dustTV.animate_type = "float";
+	dustTV.start( dustTV.float );
 
 	$(window).scroll(function(){
-		if( $(window).scrollTop() >= height / 2 && $(window).scrollTop() <= height ){
-			if( dustTV.animate_type != "float" ){
-				console.log("start float");
-				dustTV.animate_type = "float";
-				dustTV.start.call( dustTV, dustTV.float );
-			}
-		}
-		else {
+
+		var position = $(window).scrollTop();
+		if( position >= 0 && position <= (height * 0.5) ){
+			dustTV.animate_type = "float";
+			dustTV.start.call( dustTV, dustTV.float );
+		}else {
 			dustTV.animate_type = "Nothing";
 			dustTV.stop();
 		}
