@@ -168,12 +168,12 @@ var DustPanel = function(width, height, total){
 	// this sholud be more flexible
 	var index = 0;
 	var baseX = 450;
-	var baseY = 500;
-	var gate = 100;
-	index = add_circle_position.call(this, PM2_5, index, { x: baseX, y: 500 } );
-	index = add_circle_position.call(this, PM10, index, { x: baseX + 1 * gate + 4 * 10 , y: baseY - 3 * 10 } );
-	index = add_circle_position.call(this, hair, index, { x: baseX + 2 * gate + 8 * 10, y: baseY - 23 * 10 } );
-	index = add_circle_position.call(this, sand, index, {x: baseX + 3 * gate + 32 * 10 , y: baseY - 35 * 10} );
+	var baseY = 600;
+	var gate = 80;
+	index = add_circle_position.call(this, PM2_5, index, { x: baseX, y: baseY } );
+	index = add_circle_position.call(this, PM10, index, { x: baseX + 0 * gate + 4 * 10 , y: baseY / 2 - 3 * 10 } );
+	index = add_circle_position.call(this, hair, index, { x: baseX + 1 * gate + 8 * 10, y: baseY / 2 - 23 * 10 } );
+	index = add_circle_position.call(this, sand, index, {x: baseX + 1 * gate + 32 * 10 , y: baseY - 35 * 10} );
 
 	// this sholud be more flexible
 	$("body").find(".dust-float").append( this.renderer.view ); 

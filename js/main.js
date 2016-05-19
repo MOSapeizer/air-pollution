@@ -42,15 +42,15 @@ $(document).ready(function(){
 	};
 
 	var select_animation_type = function( position ){
-		if( position >= 0 && position <= (height * 0.5) ){
-			if( position >= (height * 0.4) && position <= (height * 0.5) ){
+		if( position >= 0 && position <= (height * 0.6) ){
+			if( position >= (height * 0.3) && position <= (height * 0.6) ){
 				var range = height * 0.1;
-				var distance = position - height * 0.4;
+				var distance = position - height * 0.3;
 				var ration = distance / range;
 				$(".content").css("opacity", 1 - ration);
 			}
 			return "Float";
-		}else if( position > (height * 0.5) && position <= height ){
+		}else if( position > (height * 0.6) && position <= height ){
 			return "Circle";
 		}else {
 			return "Nothing";
