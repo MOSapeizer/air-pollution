@@ -5,6 +5,9 @@ var resize_canvas = function() {
 }
 
 $(document).ready(function(){
+  	var $window = $(window);
+  	var $animation_view = $('.content');
+  	$animation_view.addClass("in-view");
 	var width = $(".page").width();
 	var height = $(".page").height();
 	var taiwan = d3.select("svg").append("g");
@@ -43,12 +46,6 @@ $(document).ready(function(){
 
 	var select_animation_type = function( position ){
 		if( position >= 0 && position <= (height * 0.6) ){
-			if( position >= (height * 0.3) && position <= (height * 0.6) ){
-				var range = height * 0.1;
-				var distance = position - height * 0.3;
-				var ration = distance / range;
-				$(".content").css("opacity", 1 - ration);
-			}
 			return "Float";
 		}else if( position > (height * 0.6) && position <= height ){
 			return "Circle";
@@ -63,8 +60,26 @@ $(document).ready(function(){
 
 	$(window).scroll(function(){
 		var position = $(window).scrollTop();
+		var window_height = $window.height();
+		var window_top_position = $window.scrollTop();
+		var window_bottom_position = (window_top_position + window_height);
 
 		dustTV.animate_type = select_animation_type( position );
+
+		$.each($animation_view, function(){
+			var $element = $(this);
+			var element_height = $element.outerHeight();
+		    var element_top_position = $element.offset().top;
+		    var element_bottom_position = (element_top_position + element_height);
+
+		    if ((element_bottom_position >= window_top_position) &&
+		        (element_top_position <= window_bottom_position)) {
+		      $element.addClass('in-view');
+		    } else {
+		      $element.removeClass('in-view');
+		    }
+
+		});
 
 		if( dustTV.animate_type == "Nothing" )
 			dustTV.stop();
