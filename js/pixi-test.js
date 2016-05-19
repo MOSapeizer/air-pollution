@@ -37,6 +37,7 @@ var dustAnimation = function( width, height ){
 
 	var animate = null;
 	var step = 100;
+	var requestID;
 
 	var init_status = function(){
 		if( this.animate_type == "Circle" ){
@@ -102,7 +103,7 @@ var dustAnimation = function( width, height ){
 	this.play = function(){
 		if( animate != null && typeof(animate) === 'function' ){
 			animate();
-			requestAnimationFrame( this.play.bind(this) );
+			requestID = requestAnimationFrame( this.play.bind(this) );
 		}
 	}
 
@@ -116,6 +117,8 @@ var dustAnimation = function( width, height ){
 	}
 
 	this.stop = function(){
+		if( requestID )
+			cancelAnimationFrame(requestId);
 		animate = null;
 	}
 
@@ -194,7 +197,7 @@ var circlizeDust = function(){
 var approach_position = function( dust, endX, endY, scale=1 ){
 
 	var isArrived = function( now, end ){
-		return now.toFixed(2) != end.toFixed(2);
+		return now.toFixed(2) == end.toFixed(2);
 	}
 
 	var isArround = function( now, end, step ){
@@ -207,13 +210,13 @@ var approach_position = function( dust, endX, endY, scale=1 ){
 	if( endX == null || endY == null )
 		return true;
 
-	if( isArrived( dust.x, endX ) ){
+	if( !isArrived( dust.x, endX ) ){
 		if( isArround( dust.x, endX, dust.stepX ) )
 			dust.x = endX;
 		else
 			dust.x += dust.stepX * scale;
 	}
-	if( isArrived( dust.y, endY ) ){
+	if( !isArrived( dust.y, endY ) ){
 		if( isArround( dust.y, endY, dust.stepY ) )
 			dust.y = endY;
 		else
@@ -231,7 +234,6 @@ var floatDust = function(){
 		dust.x += randomPosition();
 		dust.y += randomPosition();
 		changeAlpha( dust );
-		// changeScale( dust );
 		CheckOutBound( dust );
 	}
 
@@ -252,9 +254,9 @@ var floatDust = function(){
 
 	var CheckOutBound = function( dust ){
 		if( dust.x > width )
-			dust.x = 0;
+			dust.x = Math.random() * width;
 		if( dust.y > height ){
-			dust.y = 0;
+			dust.y = Math.random() * height;
 		}
 	}
 
@@ -274,9 +276,16 @@ var floatDust = function(){
 		return NUM_OF_SIN;
 	}
 
+	var step = 0;
+	
 	for( var i = this.total -1 ; i >= 0 ; i--  ){
 		var dust = this.group[i];
-		if( approach_position( dust, dust.OLD_X, dust.OLD_Y, 0.1 ) );
+		if( dust.OLD_X && dust.OLD_Y ){
+			if( step == 80 || approach_position( dust, dust.OLD_X, dust.OLD_Y, 0.1 ))
+				dust.OLD_X = dust.OLD_Y = null;
+			step++;
+		}
+		if( !dust.OLD_X && !dust.OLD_Y )
 			updateDustInform( dust );
 	}
 
