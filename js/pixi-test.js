@@ -1,8 +1,8 @@
 var textureFactory = function(radius, color, alpha){
 	var circle = new PIXI.Graphics();
 	circle.beginFill( color, alpha );
-	circle.drawCircle(3, 3, radius);
-	return circle.generateTexture( 3*3, PIXI.SCALE_MODES.DEFAULT);
+	circle.drawCircle(0, 0, radius);
+	return circle.generateTexture( 10*10, PIXI.SCALE_MODES.DEFAULT);
 }
 
 var bitmap = function( diameter ){
@@ -36,9 +36,69 @@ var bitmap = function( diameter ){
 var dustAnimation = function( width, height ){
 
 	var animate = null;
+	var step = 100;
+
+	var init_status = function(){
+		if( this.animate_type == "Circle" ){
+			save_old_status( this.dustPanel );
+			init_circle( this.dustPanel );
+		}
+		if( this.animate_type == "Float" ){
+			init_float( this.dustPanel );
+		}
+	}
+
+	var save_old_status = function( dustPanel ){
+		dustPanel.old_status = "saved";
+		for( var i = dustPanel.total -1 ; i >= 0 ; i--  ){
+			var dust = dustPanel.group[i];
+			dust.OLD_X = dust.x;
+			dust.OLD_Y = dust.y;
+			dust.OLD_HEIGHT = dust.height;
+			dust.OLD_WIDTH = dust.width;
+			dust.OLD_ALPHA = dust.alpha;
+		}
+	}
+
+	var init_circle = function( dustPanel ){
+		for( var i = dustPanel.total -1 ; i >= 0 ; i--  ){
+			var dust = dustPanel.group[i];
+			dust.height = 10;
+			dust.width = 10;
+			dust.alpha = 1;
+			dust.stepX = (dust.circleX - dust.x) / step;
+			dust.stepY = (dust.circleY - dust.y) / step;
+		}
+	}
+
+	var distanceRatio = function(circleX, circleY, x, y){
+		circleR2 = circleX*circleX + circleY*circleY;
+		r2 = x*x + y*y;
+		var distanceX = circleX - x;
+		var distanceY = circleY - y;
+		var distanceR = Math.sqrt( distanceX*distanceX + distanceY*distanceY )
+		if( circleR2 <= r2 )
+			return  (distanceR / 100).toFixed() * -1;
+		return (distanceR / 100).toFixed();
+	}
+
+	var init_float = function( dustPanel ){
+		if( dustPanel.old_status == "saved" ){
+			for( var i = dustPanel.total -1 ; i >= 0 ; i--  ){
+				var dust = dustPanel.group[i];
+				dust.x = dust.OLD_X ;
+				dust.y = dust.OLD_Y;
+				dust.height = dust.OLD_HEIGHT;
+				dust.width = dust.OLD_WIDTH;
+				dust.alpha = dust.OLD_ALPHA;
+			}
+		}
+	}
+
 	this.dustPanel = new DustPanel(width, height, 1481); 
 	this.float = floatDust.bind( this.dustPanel );
-	this.circlize = dust_circle.bind( this.dustPanel );
+	this.circle = circlizeDust.bind( this.dustPanel );
+	this.playing = "";
 	this.animate_type = "";
 
 	this.play = function(){
@@ -49,11 +109,12 @@ var dustAnimation = function( width, height ){
 	}
 
 	this.start = function( animation ){
-		if( animate != animation ){
+		if( this.playing != this.animate_type ){
+			init_status.call(this);
 			animate = animation;
+			this.playing = this.animate_type;
 			this.play.call(this); 
 		}
-		return "playing";
 	}
 
 	this.stop = function(){
@@ -62,35 +123,27 @@ var dustAnimation = function( width, height ){
 
 }
 
-var dust_circle = function(){
-	var container = this.container;
-	var renderer = this.renderer;
-
-	$("body").find(".dust-float").append( renderer.view ); 
-
-	this.group.forEach( function(dust){
-		dust.alpha = 1;
-	});
-	
-	// start animating
-	// requestAnimationFrame( animateDust.bind( this ) );
-}
-
 var DustPanel = function(width, height, total){
 
-	var texture = textureFactory( 2, 0x555555, 1 );
+	var texture = textureFactory( 10, 0x303030, 0.5 );
 
 	this.width = width;
 	this.height = height;
-	this.container = new PIXI.ParticleContainer();
+	this.container = new PIXI.ParticleContainer(15000, {"scale" : true, "alpha" : true});
 	this.renderer = new PIXI.WebGLRenderer(width, height, { "transparent": true });
 	this.total = total;
 	this.group = [];
+	this.old_status = "unsaved"
 
 	for (var i = this.total - 1; i >= 0; i--) {
 		var dust = new PIXI.Sprite( texture );
 		dust.x = Math.random() * width;
 		dust.y = Math.random() * height;
+		dust.circleX = 500;
+		dust.circleY = 400;
+		dust.angle = Math.random() * 10;
+		dust.default_radius = Math.random() * 10
+		dust.width = dust.height = dust.default_radius;
 		this.group.push(dust);
 		this.container.addChild( dust );
 	}
@@ -99,22 +152,66 @@ var DustPanel = function(width, height, total){
 	$("body").find(".dust-float").append( this.renderer.view ); 
 }
 
+var circlizeDust = function(){
+
+	var updateDustInform = function( dust ){
+		approach_position(dust);
+	}
+
+	var approach_position = function( dust ){
+		if( dust.x.toFixed() != dust.circleX.toFixed() ){
+			if( Math.abs(dust.circleX - dust.X) <= Math.abs(1*dust.stepX ) )
+				dust.x = dust.circleX;
+			else
+				dust.x += dust.stepX;
+		}
+		if( dust.y.toFixed() != dust.circleY.toFixed() ){
+			if( Math.abs(dust.circleY - dust.y) <= Math.abs( 1*dust.stepY ) )
+				dust.y = dust.circleY;
+			else
+				dust.y += dust.stepY;
+		}
+		
+	}
+
+	for( var i = this.total -1 ; i >= 0 ; i--  ){
+		var dust = this.group[i];
+		updateDustInform( dust );
+	}
+
+	this.renderer.render( this.container );
+	
+}
+
 var floatDust = function(){
 
 	var width = this.width;
 	var height = this.height;
 
 	var updateDustInform = function( dust ){
-		var radius = randomRadius(8);
 		dust.x += randomPosition();
 		dust.y += randomPosition();
-		CheckPosition( dust );
-		dust.height = radius;
-		dust.width = radius;
-		dust.alpha = randomAlpha();
+		changeAlpha( dust );
+		// changeScale( dust );
+		CheckOutBound( dust );
 	}
 
-	var CheckPosition = function( dust ){
+	var changeScale = function( dust ){
+		var scale = dust.angle * 50;
+		dust.width += SinAlpha( scale );
+		dust.height += SinAlpha( scale );
+	}
+
+	var changeAlpha = function( dust ){
+		if( dust.alpha >= 1 )
+			dust.alpha = 1;
+		else if( dust.alpha <= 0.3 )
+			dust.alpha = 0.3;
+		dust.angle += 0.01;
+		dust.alpha += SinAlpha( dust.angle );
+	}
+
+	var CheckOutBound = function( dust ){
 		if( dust.x > width )
 			dust.x = 0;
 		if( dust.y > height ){
@@ -133,10 +230,9 @@ var floatDust = function(){
 		return Math.sin( num );
 	}
 
-	var randomAlpha = function(){
-		var RANGE_OF_PI = Math.random() * 3.14;
-		var NUM_OF_SIN = Math.sin( RANGE_OF_PI );
-		return Math.abs( NUM_OF_SIN );
+	var SinAlpha = function( ANGLE ){
+		var NUM_OF_SIN = Math.sin( ANGLE );
+		return NUM_OF_SIN;
 	}
 
 	for( var i = this.total -1 ; i >= 0 ; i--  ){

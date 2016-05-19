@@ -41,21 +41,34 @@ $(document).ready(function(){
 		return d3.extent(v);
 	};
 
+	var select_animation_type = function( position ){
+		if( position >= 0 && position <= (height * 0.5) ){
+			return "Float";
+		}else if( position > (height * 0.5) && position <= height ){
+			return "Circle";
+		}else {
+			return "Nothing";
+		}
+	};
+
 	dustTV = new dustAnimation(width, height);
-	dustTV.animate_type = "float";
+	dustTV.animate_type = "Float";
 	dustTV.start( dustTV.float );
 
 	$(window).scroll(function(){
-
 		var position = $(window).scrollTop();
-		if( position >= 0 && position <= (height * 0.5) ){
-			dustTV.animate_type = "float";
-			dustTV.start.call( dustTV, dustTV.float );
-		}else {
-			dustTV.animate_type = "Nothing";
+
+		dustTV.animate_type = select_animation_type( position );
+
+		if( dustTV.animate_type == "Nothing" )
 			dustTV.stop();
-		}
-	})
+		else if( dustTV.animate_type == "Float" )
+			dustTV.start.call( dustTV, dustTV.float );
+		else if( dustTV.animate_type == "Circle" )
+			dustTV.start.call( dustTV, dustTV.circle );
+	});
+
+	
 
 	var purple_alert = ['#fff' ,'#505'];
 	var color_range = ['#fef0d9' ,'#fdba57', '#fda38a', '#f24249', '#a7050e', '#760207'];
