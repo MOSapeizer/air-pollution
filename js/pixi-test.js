@@ -86,8 +86,6 @@ var dustAnimation = function( width, height ){
 		if( dustPanel.old_status == "saved" ){
 			for( var i = dustPanel.total -1 ; i >= 0 ; i--  ){
 				var dust = dustPanel.group[i];
-				dust.x = dust.OLD_X ;
-				dust.y = dust.OLD_Y;
 				dust.height = dust.OLD_HEIGHT;
 				dust.width = dust.OLD_WIDTH;
 				dust.alpha = dust.OLD_ALPHA;
@@ -163,6 +161,8 @@ var DustPanel = function(width, height, total){
 		this.group.push(dust);
 		this.container.addChild( dust );
 	}
+
+	// this sholud be more flexible
 	var index = 0;
 	var baseX = 450;
 	var baseY = 500;
@@ -179,24 +179,7 @@ var DustPanel = function(width, height, total){
 var circlizeDust = function(){
 
 	var updateDustInform = function( dust ){
-		approach_position(dust);
-
-	}
-
-	var approach_position = function( dust ){
-		var base = 1;
-		if( dust.x.toFixed(2) != dust.circleX.toFixed(2) ){
-			if( Math.abs(dust.circleX - dust.X) <= Math.abs( base*dust.stepX ) )
-				dust.x = dust.circleX;
-			else
-				dust.x += dust.stepX;
-		}
-		if( dust.y.toFixed(2) != dust.circleY.toFixed(2) ){
-			if( Math.abs(dust.circleY - dust.y) <= Math.abs( base*dust.stepY ) )
-				dust.y = dust.circleY;
-			else
-				dust.y += dust.stepY;
-		}
+		approach_position(dust, dust.circleX, dust.circleY);
 	}
 
 	for( var i = this.total -1 ; i >= 0 ; i--  ){
@@ -206,6 +189,37 @@ var circlizeDust = function(){
 
 	this.renderer.render( this.container );
 	
+}
+
+var approach_position = function( dust, endX, endY, scale=1 ){
+
+	var isArrived = function( now, end ){
+		return now.toFixed(2) != end.toFixed(2);
+	}
+
+	var isArround = function( now, end, step ){
+		var base = 1;
+		var blur = Math.abs( base*dust.stepY )
+		var distance = Math.abs( end - now );
+		return distance <= blur;
+	}
+
+	if( endX == null || endY == null )
+		return true;
+
+	if( isArrived( dust.x, endX ) ){
+		if( isArround( dust.x, endX, dust.stepX ) )
+			dust.x = endX;
+		else
+			dust.x += dust.stepX * scale;
+	}
+	if( isArrived( dust.y, endY ) ){
+		if( isArround( dust.y, endY, dust.stepY ) )
+			dust.y = endY;
+		else
+			dust.y += dust.stepY * scale;
+	}
+	return isArrived( dust.x, endX ) && isArrived( dust.y, endY );
 }
 
 var floatDust = function(){
@@ -262,7 +276,8 @@ var floatDust = function(){
 
 	for( var i = this.total -1 ; i >= 0 ; i--  ){
 		var dust = this.group[i];
-		updateDustInform( dust );
+		if( approach_position( dust, dust.OLD_X, dust.OLD_Y, 0.1 ) );
+			updateDustInform( dust );
 	}
 
 	this.renderer.render( this.container );

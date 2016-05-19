@@ -62,13 +62,13 @@ $(document).ready(function(){
 
 		if( dustTV.animate_type == "Nothing" )
 			dustTV.stop();
-		else if( dustTV.animate_type == "Float" )
+		else if( dustTV.animate_type == "Float" ){
 			dustTV.start.call( dustTV, dustTV.float );
-		else if( dustTV.animate_type == "Circle" )
+		}
+		else if( dustTV.animate_type == "Circle" ){
 			dustTV.start.call( dustTV, dustTV.circle );
+		}
 	});
-
-	
 
 	var purple_alert = ['#fff' ,'#505'];
 	var color_range = ['#fef0d9' ,'#fdba57', '#fda38a', '#f24249', '#a7050e', '#760207'];
@@ -76,7 +76,8 @@ $(document).ready(function(){
 	d3.json("data/county.json", function(topodata) {
 		var features = topojson.feature(topodata, topodata.objects["County_MOI_1041215"]).features;
 		var object_range = objectRange( pm25 );
-		var color = d3.scale.quantize().domain( object_range ).range( color_range );
+		var color = d3.scale.linear().domain( object_range ).range( purple_alert );
+		// var color = d3.scale.quantize().domain( object_range ).range( color_range );
 		var fisheye = d3.fisheye.circular().radius(100).distortion(2);
 		var prj = function(v){
 			 var ret = d3.geo.mercator().center( mapCenter ).scale(8000)(v);
