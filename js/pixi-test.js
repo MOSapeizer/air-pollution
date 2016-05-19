@@ -159,14 +159,15 @@ var circlizeDust = function(){
 	}
 
 	var approach_position = function( dust ){
-		if( dust.x.toFixed() != dust.circleX.toFixed() ){
-			if( Math.abs(dust.circleX - dust.X) <= Math.abs(1*dust.stepX ) )
+		var base = 1;
+		if( dust.x.toFixed(2) != dust.circleX.toFixed(2) ){
+			if( Math.abs(dust.circleX - dust.X) <= Math.abs( base*dust.stepX ) )
 				dust.x = dust.circleX;
 			else
 				dust.x += dust.stepX;
 		}
-		if( dust.y.toFixed() != dust.circleY.toFixed() ){
-			if( Math.abs(dust.circleY - dust.y) <= Math.abs( 1*dust.stepY ) )
+		if( dust.y.toFixed(2) != dust.circleY.toFixed(2) ){
+			if( Math.abs(dust.circleY - dust.y) <= Math.abs( base*dust.stepY ) )
 				dust.y = dust.circleY;
 			else
 				dust.y += dust.stepY;
