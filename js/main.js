@@ -7,7 +7,6 @@ var resize_canvas = function() {
 $(document).ready(function(){
   	var $window = $(window);
   	var $animation_view = $('.content');
-  	$animation_view.addClass("in-view");
 	var width = $(".page").width();
 	var height = $(".page").height();
 	var taiwan = d3.select("svg").append("g");
@@ -68,12 +67,10 @@ $(document).ready(function(){
 
 		$.each($animation_view, function(){
 			var $element = $(this);
-			var element_height = $element.outerHeight();
-		    var element_top_position = $element.offset().top;
-		    var element_bottom_position = (element_top_position + element_height);
+			var element_half_height = $element.outerHeight() / 2;
+		    var element_half_position = $element.offset().top + element_half_height;
 
-		    if ((element_bottom_position >= window_top_position) &&
-		        (element_top_position <= window_bottom_position)) {
+		    if ( (element_half_position <= window_bottom_position) && (element_half_position >= window_top_position) ) {
 		      $element.addClass('in-view');
 		    } else {
 		      $element.removeClass('in-view');
