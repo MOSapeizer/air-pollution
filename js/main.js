@@ -36,6 +36,9 @@ $(document).ready(function(){
 	};
 
 	var mapCenter = [120, 24.5];
+	var dustTV = new dustAnimation(width, height);
+	dustTV.animate_type = "Float";
+	dustTV.start( dustTV.float );
 
 	var objectRange = function( obj ){
 		var v = [];
@@ -53,18 +56,13 @@ $(document).ready(function(){
 		}
 	};
 
-	dustTV = new dustAnimation(width, height);
-	dustTV.animate_type = "Float";
-	dustTV.start( dustTV.float );
-
-	$(window).scroll(function(){
+	var check_in_view = function(){
 		var position = $(window).scrollTop();
 		var window_height = $window.height();
 		var window_top_position = $window.scrollTop();
 		var window_bottom_position = (window_top_position + window_height);
 
 		dustTV.animate_type = select_animation_type( position );
-
 		$.each($animation_view, function(){
 			var $element = $(this);
 			var element_half_height = $element.outerHeight() / 2;
@@ -77,19 +75,43 @@ $(document).ready(function(){
 		    }
 
 		});
+	}
 
-		if( dustTV.animate_type == "Nothing" )
-			dustTV.stop();
-		else if( dustTV.animate_type == "Float" ){
+	var scroll_listener = function(){
+
+		check_in_view();
+
+		if( dustTV.animate_type == "Nothing" ){
+			// dustTV.stop();
+		} else if( dustTV.animate_type == "Float" ){
 			dustTV.start.call( dustTV, dustTV.float );
-		}
-		else if( dustTV.animate_type == "Circle" ){
+		} else if( dustTV.animate_type == "Circle" ){
 			dustTV.start.call( dustTV, dustTV.circle );
 		}
-	});
+	}
+
+	check_in_view();
+	$(window).scroll( scroll_listener );
 
 	var purple_alert = ['#fff' ,'#505'];
 	var color_range = ['#fef0d9' ,'#fdba57', '#fda38a', '#f24249', '#a7050e', '#760207'];
+
+	var scaleX = d3.scale.linear()
+				 .range([0, width/2])
+				 .domain([0, 100]);
+	var axisX = d3.svg.axis()
+      			.scale(scaleX)
+				.orient("bottom")
+      			.ticks(10);
+
+    d3.select('#circle-axis').append("svg")
+    			.append('g')
+    			.call(axisX)
+    			.attr({
+			      'fill':'none',
+			      'stroke':'#000',
+			      'transform':'translate(' + (width * 0.4 - 10) + ',' + (height * 0.6 + 20) + ')'
+			    });
 
 	d3.json("data/county.json", function(topodata) {
 		var features = topojson.feature(topodata, topodata.objects["County_MOI_1041215"]).features;
