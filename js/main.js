@@ -49,9 +49,12 @@ $(document).ready(function(){
 	var select_animation_type = function( position ){
 		if( position >= 0 && position <= (height * 0.6) ){
 			return "Float";
-		}else if( position > (height * 0.6) && position <= height ){
+		}else if( position > (height * 0.6) && position <= 1.5 * height ){
 			return "Circle";
-		}else {
+		}else if( position > (height * 2.5) && position <= 3.5 * height ){
+			return "Float";
+		}else{
+			console.log( position );
 			return "Nothing";
 		}
 	};
@@ -82,7 +85,7 @@ $(document).ready(function(){
 		check_in_view();
 
 		if( dustTV.animate_type == "Nothing" ){
-			// dustTV.stop();
+			dustTV.start.call( dustTV, null);
 		} else if( dustTV.animate_type == "Float" ){
 			dustTV.start.call( dustTV, dustTV.float );
 		} else if( dustTV.animate_type == "Circle" ){
@@ -113,10 +116,40 @@ $(document).ready(function(){
 			      'transform':'translate(' + (width * 0.4 - 10) + ',' + (height * 0.6 + 20) + ')'
 			    });
 
+    var longChartSVG = d3.select('#long-chart')
+    					 .append('g')
+    					 .attr( 'transform', 'translate(' + width * 0.45 + ',' + height * 0.2 + ')');
+
+    var object_range = objectRange( pm25 );
+    var color = d3.scale.linear().domain( object_range ).range( purple_alert );
+
+    d3.csv("data/pm2.5/2015pm2.5年均值.csv", function(data){
+    	var rectMaxWidth = width * 0.4;
+    	var valueMax = object_range[1];
+
+    	console.log(object_range);
+    	var barGroup = longChartSVG.selectAll(".bar")
+    			.data( data )
+    			.enter().append("g");
+
+    	barGroup.append("rect")
+    			.attr("class", "bar")
+    			.attr("x", 0)
+    			.attr("y", function(d, i){ return i * 20; })
+    			.attr("fill", function(d){ return color(d.pm) })
+    			.attr("width", function(d){ return d.pm / valueMax * rectMaxWidth ; })
+    			.attr("height", 10);
+
+    	barGroup.append("text")
+    			.attr("x", -54)
+    			.attr("y", function(d, i){ return i * 20; })
+    			.attr("dy", "0.75em")
+    			.text(function(d){ return d.city; });
+    })
+
 	d3.json("data/county.json", function(topodata) {
 		var features = topojson.feature(topodata, topodata.objects["County_MOI_1041215"]).features;
-		var object_range = objectRange( pm25 );
-		var color = d3.scale.linear().domain( object_range ).range( purple_alert );
+		
 		// var color = d3.scale.quantize().domain( object_range ).range( color_range );
 		var fisheye = d3.fisheye.circular().radius(100).distortion(2);
 		var prj = function(v){
