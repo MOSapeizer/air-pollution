@@ -49,9 +49,10 @@ $(document).ready(function(){
 	var select_animation_type = function( position ){
 		if( position >= 0 && position <= (height * 0.6) ){
 			return "Float";
-		}else if( position > (height * 0.6) && position <= height ){
+		}else if( position > (height * 0.6) && position <= 1.5 * height ){
 			return "Circle";
 		}else {
+			console.log( position );
 			return "Nothing";
 		}
 	};
@@ -82,7 +83,7 @@ $(document).ready(function(){
 		check_in_view();
 
 		if( dustTV.animate_type == "Nothing" ){
-			// dustTV.stop();
+			dustTV.start.call( dustTV, null);
 		} else if( dustTV.animate_type == "Float" ){
 			dustTV.start.call( dustTV, dustTV.float );
 		} else if( dustTV.animate_type == "Circle" ){

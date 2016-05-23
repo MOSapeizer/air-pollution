@@ -79,7 +79,7 @@ var dustAnimation = function( width, height ){
 	var step = 100;
 
 	var init_status = function(){
-		if( this.animate_type == "Circle" ){
+		if( this.animate_type == "Circle" && this.playing != "Nothing" ){
 			save_old_status( this.dustPanel );
 			init_circle( this.dustPanel );
 		}
@@ -133,6 +133,10 @@ var dustAnimation = function( width, height ){
 		}
 	}
 
+	var playing_state_change = function(){
+		return this.playing != this.animate_type;
+	}
+
 	this.dustPanel = new DustPanel(width, height, 1481); 
 	this.float = floatDust.bind( this.dustPanel );
 	this.circle = circlizeDust.bind( this.dustPanel );
@@ -152,9 +156,15 @@ var dustAnimation = function( width, height ){
 			this.stop();
 			init_status.call(this);
 			animate = animation;
+			if( this.playing == "Nothing" || this.animate_type == "Nothing" ){
+				toggleHideContainer.call( this.dustPanel );
+			}
 			this.playing = this.animate_type;
 			this.play.call(this); 
 		}
+	}
+
+	this.hide = function(){
 	}
 
 	this.stop = function(){
@@ -197,6 +207,12 @@ var DustPanel = function(width, height, total){
 	circle = null;
 	// this sholud be more flexible
 	$("body").find(".dust-float").append( this.renderer.view ); 
+}
+
+var toggleHideContainer = function(){
+	this.container.visible = !this.container.visible;
+	this.renderer.render( this.container );
+	return this.container.visible;
 }
 
 var circlizeDust = function(){
