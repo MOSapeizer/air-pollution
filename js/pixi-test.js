@@ -79,8 +79,9 @@ var dustAnimation = function( width, height ){
 	var step = 100;
 
 	var init_status = function(){
-		if( this.animate_type == "Circle" && this.playing != "Nothing" ){
-			save_old_status( this.dustPanel );
+		if( this.animate_type == "Circle" ){
+			if( this.playing != "Nothing" )
+				save_old_status( this.dustPanel );
 			init_circle( this.dustPanel );
 		}
 		if( this.animate_type == "Float" ){
