@@ -8,8 +8,7 @@ var textureFactory = function(radius, color, alpha){
 var Dust = function(x, y, r, alpha=1){
 	this.x = x;
 	this.y = y;
-	this.width = r;
-	this.height = r;
+	this.r = r;
 	this.alpha = alpha;
 }
 
@@ -51,12 +50,8 @@ var DustPanel = function(width, height, total){
 	this.total = total;
 	this.width = width;
 	this.height = height;
-	this.container = new PIXI.ParticleContainer(15000, 
-												{"scale" : true, "alpha" : true});
-	this.renderer = new PIXI.autoDetectRenderer(width, 
-												height, 
-												{ transparent: true,
-												  resolution: 1 });
+	this.container = new PIXI.Container(15000, {"scale" : true, "alpha" : true});
+	this.renderer = new PIXI.autoDetectRenderer(width, height, { transparent: true, resolution: 1 });
 	this.group = [];
 	this.circleGroup = circleGroup( width * 0.4, 
 									height * 0.6, 0.7);
@@ -70,51 +65,13 @@ var DustPanel = function(width, height, total){
 		dust.width = r;
 		dust.height = r;
 		dust.alpha_angle = Math.random() * 3.14;
-		dust.alpha = Math.sin( dust.alpha_angle );
+		dust.alpha = Math.sin(dust.alpha_angle);
 		this.group.push(dust);
 		this.container.addChild( dust );
 	}
 
-	// create a new Sprite using the texture
-	var bunny = new PIXI.Sprite(texture);
-
-
-	// move the sprite to the center of the screen
-	bunny.position.x = 500;
-	bunny.position.y = 500;
-	bunny.width = 10;
-	bunny.height = 10;
-
 	$("body").find(".dust-float").append( this.renderer.view );
 
-	animate();
-
-	var graphics = new PIXI.Graphics();
-
-	// set a fill and line style
-	graphics.beginFill(0xFF3300);
-	graphics.lineStyle(4, 0xffd900, 1);
-
-	// draw a shape
-	graphics.moveTo(50,50);
-	graphics.lineTo(250, 50);
-	graphics.lineTo(100, 100);
-	graphics.lineTo(50, 50);
-	graphics.endFill();
-
-	var stage = new PIXI.Container();
-
-	stage.interactive = true;
-
-	stage.addChild(graphics);
-
-	animate();
-
-	function animate() {
-		console.log("fuck");
-	    instance.renderer.render(stage);
-	    requestAnimationFrame( animate );
-	}
 }
 
 var DustAnimationControl = function( width, height ){

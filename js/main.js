@@ -26,6 +26,8 @@ $(document).ready(function(){
 	var height = $(".page").height();
 	var taiwan = d3.select("svg").append("g");
   	var info_box = d3.select("#info-box");
+  	var dustTV = new DustAnimationControl(width, height);
+	dustTV.start("Float");
 
 	var pm25 = {
 		"雲林縣": 32.3,
@@ -51,8 +53,7 @@ $(document).ready(function(){
 	};
 
 	var mapCenter = [120, 24.5];
-	// var dustTV = new DustAnimationControl(width, height);
-	// dustTV.start("Float");
+	
 
 	var objectRange = function( obj ){
 		var v = [];
@@ -196,12 +197,6 @@ $(document).ready(function(){
 			fisheye.focus(d3.mouse(this));
 	 	 	update();
 		});
-
-		// $("canvas").on("mousemove", function(event){
-		// 	fisheye.focus([event.pageX, event.pageY]);
-		// 	console.log(event.pageX);
-		//   	update.call(d3.select("svg"));
-		// });
 
 		update();
 
