@@ -4,8 +4,6 @@ var resize_canvas = function() {
   canvas.height( window.innerHeight );
 }
 
-var images_index = 2;
-var opening_id;
 var opening_animation = function(){
 	return setInterval(function(){
 		if( images_index >= 20 ){
@@ -27,34 +25,8 @@ $(document).ready(function(){
 	var taiwan = d3.select("svg").append("g");
   	var info_box = d3.select("#info-box");
   	var dustTV = new DustAnimationControl(width, height);
-	dustTV.start("Float");
-
-	var pm25 = {
-		"雲林縣": 32.3,
-		"嘉義市": 30.5,
-		"嘉義縣": 29.4,
-		"臺南市": 27.9,
-		"南投縣": 27.8,
-		"高雄市": 27.3,
-		"彰化縣": 26.4,
-		"臺中市": 24.6,
-		"連江縣": 24.2,
-		"苗栗縣": 21.8,
-		"桃園市": 21.2,
-		"新北市": 21,
-		"新竹市": 20.5,
-		"屏東縣": 19.7,
-		"臺北市": 18.6,
-		"新竹縣": 18.7,
-		"基隆市": 17.8,
-		"宜蘭縣": 15.2,
-		"花蓮縣": 12.5,
-		"臺東縣": 10.4
-	};
-
 	var mapCenter = [120, 24.5];
 	
-
 	var objectRange = function( obj ){
 		var v = [];
 		for( var key in obj ) v.push(obj[key]);
@@ -75,12 +47,10 @@ $(document).ready(function(){
 	};
 
 	var check_in_view = function(){
-		var position = $(window).scrollTop();
 		var window_height = $window.height();
 		var window_top_position = $window.scrollTop();
 		var window_bottom_position = (window_top_position + window_height);
 
-		// dustTV.animate_type = select_animation_type( position );
 		$.each($animation_view, function(){
 			var $element = $(this);
 			var element_half_height = $element.outerHeight() / 2;
@@ -88,6 +58,12 @@ $(document).ready(function(){
 
 		    if ( (element_half_position <= window_bottom_position) && (element_half_position >= window_top_position) ) {
 		      $element.addClass('in-view');
+		      var animation = $element.attr("animate");
+		      var tween = dustTV.playing + "_To_" + animation;
+		      // console.log(tween);
+		      // var tween_animation = dustTV.tween_channel[tween];
+		      // dustTV.setTween( tween_animation );
+		      dustTV.start( animation );
 		    } else {
 		      $element.removeClass('in-view');
 		    }
@@ -96,9 +72,7 @@ $(document).ready(function(){
 	}
 
 	// var scroll_listener = function(){
-
 	// 	check_in_view();
-
 	// 	if( dustTV.animate_type == "Nothing" ){
 	// 		dustTV.start.call( dustTV, null);
 	// 	} else if( dustTV.animate_type == "Float" ){
@@ -107,9 +81,8 @@ $(document).ready(function(){
 	// 		dustTV.start.call( dustTV, dustTV.circle );
 	// 	}
 	// }
-
 	check_in_view();
-	// $(window).scroll( scroll_listener );
+	$(window).scroll( check_in_view );
 
 	var purple_alert = ['#fff' ,'#505'];
 	var color_range = ['#fef0d9' ,'#fdba57', '#fda38a', '#f24249', '#a7050e', '#760207'];

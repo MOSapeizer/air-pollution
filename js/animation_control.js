@@ -10,6 +10,7 @@ var Dust = function(x, y, r, alpha=1){
 	this.y = y;
 	this.r = r;
 	this.alpha = alpha;
+	this.alpha_angle = Math.random() * 3.14;
 }
 
 var DustFloat = function(width, height, total){
@@ -20,21 +21,22 @@ var DustFloat = function(width, height, total){
 		var x = Math.random() * width;
 		var y = Math.random() * height;
 		var r = Math.random() * DEFAULT_CIRCLE_SIZE;
-		var dust = new Dust(x, y, r);
+		var a = Math.random();
+		var dust = new Dust(x, y, r, a);
 		this.group.push( dust );
 	}
 }
 
 var DustCircle = function(width, height, total){
 	var DEFAULT_CIRCLE_SIZE = 10;
-	var CIRCLE = circleGroup();
+	var CIRCLE = circleGroup(width / 3, height * 0.7);
 	this.group = [];
 
 	for (var i = 0; i < total ; i++) {
 		var circle = CIRCLE(i);
 		var x = circle.x;
 		var y = circle.y;
-		var r = Math.random() * DEFAULT_CIRCLE_SIZE;
+		var r = DEFAULT_CIRCLE_SIZE;
 		var dust = new Dust(x, y, r);
 		this.group.push( dust );
 	}
@@ -46,15 +48,19 @@ var DustPanel = function(width, height, total){
 	var dust_float = new DustFloat(width, height, total);
 	var dust_circle = new DustCircle(width, height, total);
 	var instance = this;
-
+	
 	this.total = total;
 	this.width = width;
 	this.height = height;
 	this.container = new PIXI.Container(15000, {"scale" : true, "alpha" : true});
-	this.renderer = new PIXI.autoDetectRenderer(width, height, { transparent: true, resolution: 1 });
+	this.renderer = new PIXI.CanvasRenderer(width, height, 
+												{ transparent: true,
+											 	  resolution: 1,
+											 	  autoResize: true });
 	this.group = [];
-	this.circleGroup = circleGroup( width * 0.4, 
-									height * 0.6, 0.7);
+	this.origin_group = dust_float.group;
+	this.update = function(){ instance.renderer.render(instance.container); }
+	this.circleGroup = dust_circle;
 	this.circleSize = 10;
 	
 	for (var i = 0; i < this.total ; i++) {
@@ -71,12 +77,13 @@ var DustPanel = function(width, height, total){
 	}
 
 	$("body").find(".dust-float").append( this.renderer.view );
-
 }
 
 var DustAnimationControl = function( width, height ){
 
 	var animation = this;
+	var tween_animation;
+	var tween_step = 0;
 	var animate = null;
 	var pause = false;
 
@@ -85,9 +92,13 @@ var DustAnimationControl = function( width, height ){
 	this.type = "";
 	this.id = null;
 
-	var channel = {"Float": float_animation.bind(this.dustPanel) };
-	var playing_state_change = function(){
-		return animation.playing != animation.type;
+	var channel = { "Float": float_animation.bind(this.dustPanel),
+					"Circle": float_to_circle_animation.bind(this.dustPanel) };
+	this.tween_channel = { "Circle_To_Float": tween_cirlce_to_float,
+						   "Float_To_Circle": null,
+						   "Nothing_To_Float": null }
+	var playing_state_change = function( type ){
+		return animation.playing != type;
 	}
 	
 	this.play = function(){
@@ -98,12 +109,30 @@ var DustAnimationControl = function( width, height ){
 	}
 
 	this.start = function( type ){
-		if( playing_state_change() ){
+		if( playing_state_change(type) ){
+			var tween_type = animation.tween_channel[ animation.playing + "_To_" + type ];
+			animation.setTween(tween_type);
 			animation.playing = type;
-			animation.type = type
+			animation.type = type;
 			animate = channel[ type ];
-			animation.play(); 
+			tween_animation && animation.tween();
+			(tween_step == 0) && animation.play(); 
 		}
+	}
+
+	this.setTween = function( tween_type ){
+		if( !tween_type )
+			return null;
+		tween_step = 30;
+		tween_animation = tween_type.bind(animation.dustPanel);
+	}
+
+	this.tween = function(){
+		tween_animation();
+		if( tween_step-- <= 0)
+			return (tween_animation = null) && (tween_step = 0);
+		// animation.dustPanel.update();
+		animation.id = requestAnimationFrame(animation.tween);
 	}
 
 	this.resume = function(){ pause = false; }
