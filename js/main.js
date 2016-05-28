@@ -51,9 +51,8 @@ $(document).ready(function(){
 	};
 
 	var mapCenter = [120, 24.5];
-	var dustTV = new dustAnimation(width, height);
-	dustTV.animate_type = "Float";
-	dustTV.start( dustTV.float );
+	// var dustTV = new DustAnimationControl(width, height);
+	// dustTV.start("Float");
 
 	var objectRange = function( obj ){
 		var v = [];
@@ -80,7 +79,7 @@ $(document).ready(function(){
 		var window_top_position = $window.scrollTop();
 		var window_bottom_position = (window_top_position + window_height);
 
-		dustTV.animate_type = select_animation_type( position );
+		// dustTV.animate_type = select_animation_type( position );
 		$.each($animation_view, function(){
 			var $element = $(this);
 			var element_half_height = $element.outerHeight() / 2;
@@ -95,41 +94,43 @@ $(document).ready(function(){
 		});
 	}
 
-	var scroll_listener = function(){
+	// var scroll_listener = function(){
 
-		check_in_view();
+	// 	check_in_view();
 
-		if( dustTV.animate_type == "Nothing" ){
-			dustTV.start.call( dustTV, null);
-		} else if( dustTV.animate_type == "Float" ){
-			dustTV.start.call( dustTV, dustTV.float );
-		} else if( dustTV.animate_type == "Circle" ){
-			dustTV.start.call( dustTV, dustTV.circle );
-		}
-	}
+	// 	if( dustTV.animate_type == "Nothing" ){
+	// 		dustTV.start.call( dustTV, null);
+	// 	} else if( dustTV.animate_type == "Float" ){
+	// 		dustTV.start.call( dustTV, dustTV.float );
+	// 	} else if( dustTV.animate_type == "Circle" ){
+	// 		dustTV.start.call( dustTV, dustTV.circle );
+	// 	}
+	// }
 
 	check_in_view();
-	$(window).scroll( scroll_listener );
+	// $(window).scroll( scroll_listener );
 
 	var purple_alert = ['#fff' ,'#505'];
 	var color_range = ['#fef0d9' ,'#fdba57', '#fda38a', '#f24249', '#a7050e', '#760207'];
-
+	// var init_position = dustTV.circle_position(0);
+	var circle_panel_width = 300;
 	var scaleX = d3.scale.linear()
-				 .range([0, width/4])
+				 .range([0, circle_panel_width])
 				 .domain([100, 0]);
 	var axisX = d3.svg.axis()
       			.scale(scaleX)
 				.orient("left")
       			.ticks(10);
 
-    d3.select('#circle-axis').append("svg")
-    			.append('g')
-    			.call(axisX)
-    			.attr({
-			      'fill':'none',
-			      'stroke':'#000',
-			      'transform':'translate(' + (width * 0.4 - 28) + ',' + (height * 0.2 + 20) + ')'
-			    });
+    // d3.select('#circle-axis').append("svg")
+    // 			.append('g')
+    // 			.call(axisX)
+    // 			.attr({
+			 //      'fill':'none',
+			 //      'stroke':'#000',
+			 //      // 'transform':'translate(' + (width * 0.4 - 28) + ',' + (height * 0.2 + 20) + ')'
+			 //      'transform':'translate(' + (init_position.x - 28) + ',' + (init_position.y - circle_panel_width + 14) + ')'
+			 //    });
 
     var longChartSVG = d3.select('#long-chart')
     					 .append('g')

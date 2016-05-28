@@ -163,6 +163,8 @@ svg {
 }
 
 #opening {
+
+	display: none;
 	pointer-events: none;
 	position: fixed;
 	width: 100%;

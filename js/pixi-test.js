@@ -165,15 +165,16 @@ var dustAnimation = function( width, height ){
 		}
 	}
 
-	this.hide = function(){
-	}
-
 	this.stop = function(){
 		if( this.requestID )
 			cancelAnimationFrame(this.requestId);
 		animate = null;
 	}
 
+	this.circle_position = function(index){
+		var circle = this.dustPanel.group[index];
+		return { x: circle.circleX, y: circle.circleY };
+	}
 }
 
 var DustPanel = function(width, height, total){
