@@ -4,6 +4,21 @@ var resize_canvas = function() {
   canvas.height( window.innerHeight );
 }
 
+var images_index = 2;
+var opening_id;
+var opening_animation = function(){
+	return setInterval(function(){
+		if( images_index >= 20 ){
+			$('#opening img').fadeOut(600);
+			clearInterval(opening_id);
+		}
+		$("#opening img").attr("src", "images/opening/" + images_index + ".png");
+		images_index += 1;
+	}, 200);
+}
+
+opening_id = opening_animation();
+
 $(document).ready(function(){
   	var $window = $(window);
   	var $animation_view = $('.content');
@@ -100,11 +115,11 @@ $(document).ready(function(){
 	var color_range = ['#fef0d9' ,'#fdba57', '#fda38a', '#f24249', '#a7050e', '#760207'];
 
 	var scaleX = d3.scale.linear()
-				 .range([0, width/2])
-				 .domain([0, 100]);
+				 .range([0, width/4])
+				 .domain([100, 0]);
 	var axisX = d3.svg.axis()
       			.scale(scaleX)
-				.orient("bottom")
+				.orient("left")
       			.ticks(10);
 
     d3.select('#circle-axis').append("svg")
@@ -113,7 +128,7 @@ $(document).ready(function(){
     			.attr({
 			      'fill':'none',
 			      'stroke':'#000',
-			      'transform':'translate(' + (width * 0.4 - 10) + ',' + (height * 0.6 + 20) + ')'
+			      'transform':'translate(' + (width * 0.4 - 28) + ',' + (height * 0.2 + 20) + ')'
 			    });
 
     var longChartSVG = d3.select('#long-chart')
@@ -126,8 +141,6 @@ $(document).ready(function(){
     d3.csv("data/pm2.5/2015pm2.5年均值.csv", function(data){
     	var rectMaxWidth = width * 0.4;
     	var valueMax = object_range[1];
-
-    	console.log(object_range);
     	var barGroup = longChartSVG.selectAll(".bar")
     			.data( data )
     			.enter().append("g");

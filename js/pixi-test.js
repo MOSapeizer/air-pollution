@@ -177,7 +177,7 @@ var dustAnimation = function( width, height ){
 }
 
 var DustPanel = function(width, height, total){
-
+	// var texture_color = 0x303030;
 	var texture = textureFactory( 10, 0x303030, 0.5 );
 	var circle = null;
 
