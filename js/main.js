@@ -96,15 +96,25 @@ $(document).ready(function(){
 				.orient("left")
       			.ticks(10);
 
-    d3.select('#circle-axis').append("svg")
-    			.append('g')
-    			.call(axisX)
-    			.attr({
-			      'fill':'none',
-			      'stroke':'#000',
-			      // 'transform':'translate(' + (width * 0.4 - 28) + ',' + (height * 0.2 + 20) + ')'
-			      'transform':'translate(' + (init_position.x - 14) + ',' + (init_position.y - circle_panel_width + 14) + ')'
-			    });
+    var circle_svg = d3.select('#circle-axis').append("svg")
+
+
+    circle_svg.append('g')
+    		  .call(axisX)
+    		  .attr({
+		        'fill':'none',
+		        'stroke':'#000',
+		        // 'transform':'translate(' + (width * 0.4 - 28) + ',' + (height * 0.2 + 20) + ')'
+		        'transform':'translate(' + (init_position.x - 14) + ',' + (init_position.y - circle_panel_width + 14) + ')'
+		      });
+	circle_svg.append("text").text("pm2.5")
+			  .attr({ 'transform':'translate(' + (init_position.x - 14) + ',' + (init_position.y + 28) + ')' });
+	circle_svg.append("text").text("pm10")
+			  .attr({ 'transform':'translate(' + (init_position.x - 14 + 70) + ',' + (init_position.y + 14) + ')' });
+	circle_svg.append("text").text("花粉")
+			  .attr({ 'transform':'translate(' + (init_position.x - 14 + 160) + ',' + (init_position.y ) + ')' });
+	circle_svg.append("text").text("沙粒")
+			  .attr({ 'transform':'translate(' + (init_position.x - 14 + 480) + ',' + (init_position.y) + ')' });
 
     var longChartSVG = d3.select('#long-chart')
     					 .append('g')
