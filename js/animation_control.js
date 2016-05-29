@@ -61,6 +61,9 @@ var DustPanel = function(width, height, total){
 	this.origin_group = dust_float.group;
 	this.update = function(){ instance.renderer.render(instance.container); }
 	this.circleGroup = dust_circle;
+	this.circle_position = function(index){
+		return instance.circleGroup.group[index];
+	}
 	this.circleSize = 10;
 	
 	for (var i = 0; i < this.total ; i++) {
@@ -117,7 +120,7 @@ var DustAnimationControl = function( width, height ){
 			var tmp = animation.playing + "_To_" + type;
 			console.log(tmp);
 			var tween_type = animation.tween_channel[ tmp ];
-			animation.setTween(tween_type);
+			animation.setTween( tween_type );
 			animation.playing = type;
 			animation.type = type;
 			animate = channel[ type ];

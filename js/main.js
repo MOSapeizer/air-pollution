@@ -86,8 +86,8 @@ $(document).ready(function(){
 
 	var purple_alert = ['#fff' ,'#505'];
 	var color_range = ['#fef0d9' ,'#fdba57', '#fda38a', '#f24249', '#a7050e', '#760207'];
-	// var init_position = dustTV.circle_position(0);
-	var circle_panel_width = 300;
+	var init_position = dustTV.dustPanel.circle_position(0);
+	var circle_panel_width = 450;
 	var scaleX = d3.scale.linear()
 				 .range([0, circle_panel_width])
 				 .domain([100, 0]);
@@ -96,15 +96,15 @@ $(document).ready(function(){
 				.orient("left")
       			.ticks(10);
 
-    // d3.select('#circle-axis').append("svg")
-    // 			.append('g')
-    // 			.call(axisX)
-    // 			.attr({
-			 //      'fill':'none',
-			 //      'stroke':'#000',
-			 //      // 'transform':'translate(' + (width * 0.4 - 28) + ',' + (height * 0.2 + 20) + ')'
-			 //      'transform':'translate(' + (init_position.x - 28) + ',' + (init_position.y - circle_panel_width + 14) + ')'
-			 //    });
+    d3.select('#circle-axis').append("svg")
+    			.append('g')
+    			.call(axisX)
+    			.attr({
+			      'fill':'none',
+			      'stroke':'#000',
+			      // 'transform':'translate(' + (width * 0.4 - 28) + ',' + (height * 0.2 + 20) + ')'
+			      'transform':'translate(' + (init_position.x - 14) + ',' + (init_position.y - circle_panel_width + 14) + ')'
+			    });
 
     var longChartSVG = d3.select('#long-chart')
     					 .append('g')
