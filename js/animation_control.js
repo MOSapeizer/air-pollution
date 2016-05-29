@@ -93,10 +93,14 @@ var DustAnimationControl = function( width, height ){
 	this.id = null;
 
 	var channel = { "Float": float_animation.bind(this.dustPanel),
-					"Circle": float_to_circle_animation.bind(this.dustPanel) };
+					"Circle": float_to_circle_animation.bind(this.dustPanel),
+					"Nothing": hide_container.bind(this.dustPanel) };
 	this.tween_channel = { "Circle_To_Float": tween_cirlce_to_float,
 						   "Float_To_Circle": null,
-						   "Nothing_To_Float": null }
+						   "Nothing_To_Float": show_container,
+						   "Float_To_Nothing": hide_container,
+						   "Nothing_To_Circle": show_container, 
+						   "Circle_To_Nothin": hide_container }
 	var playing_state_change = function( type ){
 		return animation.playing != type;
 	}
@@ -110,13 +114,15 @@ var DustAnimationControl = function( width, height ){
 
 	this.start = function( type ){
 		if( playing_state_change(type) ){
-			var tween_type = animation.tween_channel[ animation.playing + "_To_" + type ];
+			var tmp = animation.playing + "_To_" + type;
+			console.log(tmp);
+			var tween_type = animation.tween_channel[ tmp ];
 			animation.setTween(tween_type);
 			animation.playing = type;
 			animation.type = type;
 			animate = channel[ type ];
 			tween_animation && animation.tween();
-			(tween_step == 0) && animation.play(); 
+			!tween_animation && animation.play(); 
 		}
 	}
 
@@ -129,8 +135,11 @@ var DustAnimationControl = function( width, height ){
 
 	this.tween = function(){
 		tween_animation();
-		if( tween_step-- <= 0)
-			return (tween_animation = null) && (tween_step = 0);
+		if( tween_step-- <= 0){
+			(tween_animation = null) && (tween_step = 0);
+			animation.play();
+			return null;
+		}
 		// animation.dustPanel.update();
 		animation.id = requestAnimationFrame(animation.tween);
 	}

@@ -21,16 +21,6 @@ var Tween = function(start, end){
 
 	}
 }
-/*
-var tween_group = function(){
-	var origin_dust_group = this.origin_dust_group();
-	var dust_group = this.group;
-	var tween_group = [];
-	for(var i=0 ; i < this.total ; i++ ){
-		tween_group.push(new Tween( dust_group[i], origin_dust_group[i] ));
-	}
-	return tween_group;
-}*/
 
 var tween_cirlce_to_float = function(){
 	var CIRCLE = this.circleGroup;
@@ -126,5 +116,15 @@ var float_animation = function(){
 		updateDustInform( dust );
 	}
 
+	this.renderer.render( this.container );
+}
+
+var hide_container = function(){
+	this.container.visible = false;
+	this.renderer.render( this.container );
+}
+
+var show_container = function(){
+	this.container.visible = true;
 	this.renderer.render( this.container );
 }
