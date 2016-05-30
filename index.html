@@ -33,18 +33,34 @@
 			</div>
 		</div>
 		<div class="content" animate="Circle">
-			<div id="circle-axis">
-				
-			</div>
+			<div id="circle-axis"></div>
 		</div>
 		<div class="content" animate="Nothing">
 			<div id="gif-wall">
-				<img src="images/air-pollution-gif/二手菸.gif" alt="二手菸">
-				<img src="images/air-pollution-gif/交通.gif" alt="交通">
-				<img src="images/air-pollution-gif/工廠.gif" alt="工廠">
-				<img src="images/air-pollution-gif/廚房油煙.gif" alt="廚房油煙">
-				<img src="images/air-pollution-gif/汽車廢氣.gif" alt="汽車廢氣">
-				<img src="images/air-pollution-gif/露天燃燒.gif" alt="露天燃燒">
+				<div class="gif">
+					<img src="images/air-pollution-gif/二手菸.gif" alt="二手菸">
+					<span>二手菸</span>
+				</div>
+				<div class="gif">
+					<img src="images/air-pollution-gif/交通.gif" alt="交通">
+					<span>道路揚塵</span>
+				</div>
+				<div class="gif">
+					<img src="images/air-pollution-gif/工廠.gif" alt="工廠">
+					<span>工廠廢氣</span>
+				</div>
+				<div class="gif">
+					<img src="images/air-pollution-gif/廚房油煙.gif" alt="廚房油煙">
+					<span>廚房油煙</span>
+				</div>
+				<div class="gif">
+					<img src="images/air-pollution-gif/汽車廢氣.gif" alt="汽車廢氣">
+					<span>汽車廢氣</span>
+				</div>
+				<div class="gif">
+					<img src="images/air-pollution-gif/露天燃燒.gif" alt="露天燃燒">
+					<span>露天燃燒</span>
+				</div>
 			</div>
 		</div>
 		<div class="content" animate="Nothing">
@@ -54,6 +70,9 @@
 		</div>
 		<div class="content" animate="Nothing">
 			<svg id="long-chart"></svg>
+		</div>
+		<div class="content" animate="Nothing">
+			<svg id="line-chart"></svg>
 		</div>
 	</div>
 	<div class="description">
@@ -155,18 +174,18 @@
 		<div class="block">
 			<div class="header">
 				<div class="title">
-					<h1>台灣空氣現況</h1>
+					<h1>PM2.5爭議</h1>
 					<div class="bottom-line"></div>
 				</div>
-				<h2>紫色警報</h2>
+				<h2></h2>
 				<h2></h2>
 			</div>
 			<div class="text">
 				<p>
-					台灣的空氣到底差不差？
+					台灣的空氣到底差不差？<br/>
 					比起中國北京的污染程度，台灣的空
-					氣品質應該可以算好吧？
-					根據環保署的據數表示，全台所有縣
+					氣品質應該可以算好吧？<br/>
+					根據環保署的數據表示，全台所有縣
 					市PM2.5和PM10年平均皆為超過世
 					界衛生組織（WHO）每年平均10和
 					20μg/m3標準，加上台灣PM2.5及
@@ -176,6 +195,31 @@
 				</p>
 			</div>
 		</div>
+		<div class="block">
+			<div class="header">
+				<div class="title">
+					<h1>台灣空氣現況</h1>
+					<div class="bottom-line"></div>
+				</div>
+				<h2>紫色警報</h2>
+				<h2></h2>
+			</div>
+			<div class="text">
+				<p>
+					台灣環保署直到2012年5月，才將PM2.5
+					納入管制。測站過去採用自動連續監測
+					檢測PM2.5，之後以手動偵測為主但手
+					動偵測值比自動的測值少20%~30%。
+					因此引發不少爭議。
+					此外，台灣目前使用空氣污染指標PSI
+					和細懸浮微粒指標PM2.5兩種，每種標
+					準衡量方式不同也無法直接以數值進行
+					比較，有時便會出現相同地點卻顯示不
+					同空氣污染程度的情況
+				</p>
+			</div>
+		</div>
+
 	</div>
 </body>
 </html>

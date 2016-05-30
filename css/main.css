@@ -118,15 +118,31 @@ svg {
 }
 
 .content #gif-wall {
+	box-sizing: border-box;
+	width: 100%;
 	padding-top: 2em;
-	padding-left: 35%;
+	padding-left: 30%;
 }
 
-.content #gif-wall img {
+.content #gif-wall .gif img {
 	margin: 0;
 	padding: 0;
-	width: 45%;
-	height: 32%;
+	width: 100%;
+	height: 80%;
+}
+
+.content #gif-wall .gif span {
+	display: block;
+	text-align: center;
+	width: 100%;
+	height: 20%;
+}
+
+.content #gif-wall .gif {
+	display: inline-block;
+	padding-left: 5%;
+	width: 40%;
+	height: 30%;
 }
 
 .content #gif-wall img:nth-child(even) {
@@ -160,6 +176,25 @@ svg {
 	width: 100%;
 	height: 100%;
 	z-index: 2;
+}
+
+#line-chart .axis {
+	fill: none;
+	stroke: #000;
+}
+
+#line-chart .x.axis path {
+	display: none;
+}
+
+#line-chart .line {
+	fill: none;
+	stroke: purple;
+	stroke-width: 1.5px;
+}
+
+#line-chart .manual-point {
+	fill: #600;
 }
 
 #opening {

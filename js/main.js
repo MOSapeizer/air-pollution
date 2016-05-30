@@ -126,23 +126,60 @@ $(document).ready(function(){
     d3.csv("data/pm2.5/2015pm2.5年均值.csv", function(data){
     	var rectMaxWidth = width * 0.4;
     	var valueMax = object_range[1];
-    	var barGroup = longChartSVG.selectAll(".bar")
+    	var scaleX = d3.scale.linear()
+    						 .range([0, rectMaxWidth])
+    						 .domain([0, 35]);
+    	var axisX = d3.svg.axis().scale( scaleX ).orient("bottom").ticks(8);
+    	var whoX = scaleX(10);
+    	var taiwanX = scaleX(15);
+    	var who_line = [{ x: whoX, y: 0 }, { x: whoX, y: 410}];
+    	var taiwan_line = [{ x: taiwanX, y: 0 }, { x: taiwanX, y: 410}];
+    	var draw_line = d3.svg.line().x(function(d){ return d.x })
+    								.y(function(d){ return d.y });
+    	var barGroup = longChartSVG.append("g").selectAll(".bar")
     			.data( data )
-    			.enter().append("g");
+    			.enter();
 
     	barGroup.append("rect")
     			.attr("class", "bar")
     			.attr("x", 0)
     			.attr("y", function(d, i){ return i * 20; })
     			.attr("fill", function(d){ return color(d.pm) })
-    			.attr("width", function(d){ return d.pm / valueMax * rectMaxWidth ; })
-    			.attr("height", 10);
+    			.attr("width", function(d){ return d.pm / 35 * rectMaxWidth ; })
+    			.attr("height", 15);
 
     	barGroup.append("text")
     			.attr("x", -54)
     			.attr("y", function(d, i){ return i * 20; })
     			.attr("dy", "0.75em")
     			.text(function(d){ return d.city; });
+
+    	longChartSVG.append("g")
+    			.call(axisX)
+    			.attr({
+    				'fill': 'none',
+    				'stroke': '#000',
+    				'transform': 'translate(0, 410)'
+    			});
+
+    	longChartSVG.append("path")
+    			.attr({
+    				'd': draw_line(who_line),
+    				'y': 0,
+    				'stroke': '#F00',
+    				'stroke-width': '5px',
+    				'fill': 'red'
+    			});
+
+    	longChartSVG.append("path")
+    			.attr({
+    				'd': draw_line(taiwan_line),
+    				'y': 0,
+    				'stroke': '#F00',
+    				'stroke-width': '5px',
+    				'fill': 'red'
+    			});
+
     })
 
 	d3.json("data/county.json", function(topodata) {
@@ -183,6 +220,67 @@ $(document).ready(function(){
 
 		update();
 
+	});
+
+	d3.csv("data/pm2.5/手自動監測.csv", function(data){
+    	var lineChartWidth = width * 0.4;
+    	var lineChartHeight = height * 0.2;
+		var lineChartSVG = d3.select('#line-chart').append('g')
+    						 .attr( 'transform', 'translate(' + lineChartWidth + ',' + lineChartHeight + ')');
+    	var domain_x = d3.extent(data, function(d){ return d.year });
+    	var text_offset = lineChartWidth / (data.length-1)  / 2;
+		var chart_height = height * 0.3;
+		var scaleX = d3.scale.linear()
+    						 .range([0, lineChartWidth])
+    						 .domain(domain_x);
+    	var scaleY = d3.scale.linear()
+    						 .range([chart_height, 0])
+    						 .domain([20, 40]);
+    	var axisX = d3.svg.axis().scale( scaleX ).orient("bottom");
+    	var axisY = d3.svg.axis().scale( scaleY ).orient("left").ticks(5);
+
+    	var line = d3.svg.line().x(function(d){ return scaleX(d.year) })
+    							.y(function(d){ return scaleY(d.auto) });
+    	lineChartSVG.append("g")
+    				.call(axisY)
+    				.attr("class", "axis")
+    				.append("text")
+    				.attr("transform", "rotate(-90)")
+    				.attr("y", 0)
+    				.attr("x", -chart_height / 2)
+    				.attr("dy", "-2em")
+    				.text("μg/m3");
+
+    	lineChartSVG.append("g")
+    				.call(axisX)
+    				.attr("class", "x axis")
+    				.attr('transform', 'translate(0, ' + chart_height + ')')
+    				.selectAll("text")
+    				.attr("transform", 'translate(' + text_offset + ', 0)')
+
+    	var line_group = lineChartSVG.append("g");
+
+    	line_group.append("path")
+    				.datum(data)
+    				.attr("class", "line")
+    				.attr("d", line)
+    				.attr("transform", 'translate(' + text_offset + ', 0)');
+
+    	var text_description_offset = (scaleX(domain_x[1]) + text_offset);
+
+    	line_group.append("text")
+    				.attr("transform", 'translate(' + text_description_offset + ', ' + scaleY(30) + ')')
+    				.text("自動偵測");
+
+    	line_group.append("text")
+    				.attr("transform", 'translate(' + (text_description_offset + 10) + ', ' + scaleY(23.5) + ')')
+    				.text("手動偵測");
+
+    	line_group.append("circle")
+    			  .attr("r", 5)
+    			  .attr("cx", text_description_offset)
+    			  .attr("cy", scaleY(23.5))
+    			  .attr("class", "manual-point");
 	});
 });
 
