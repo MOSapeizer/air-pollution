@@ -60,9 +60,6 @@ $(document).ready(function(){
 		      $element.addClass('in-view');
 		      var animation = $element.attr("animate");
 		      var tween = dustTV.playing + "_To_" + animation;
-		      // console.log(tween);
-		      // var tween_animation = dustTV.tween_channel[tween];
-		      // dustTV.setTween( tween_animation );
 		      dustTV.start( animation );
 		    } else {
 		      $element.removeClass('in-view');
@@ -71,57 +68,19 @@ $(document).ready(function(){
 		});
 	}
 
-	// var scroll_listener = function(){
-	// 	check_in_view();
-	// 	if( dustTV.animate_type == "Nothing" ){
-	// 		dustTV.start.call( dustTV, null);
-	// 	} else if( dustTV.animate_type == "Float" ){
-	// 		dustTV.start.call( dustTV, dustTV.float );
-	// 	} else if( dustTV.animate_type == "Circle" ){
-	// 		dustTV.start.call( dustTV, dustTV.circle );
-	// 	}
-	// }
 	check_in_view();
 	$(window).scroll( check_in_view );
 
 	var purple_alert = ['#fff' ,'#505'];
 	var color_range = ['#fef0d9' ,'#fdba57', '#fda38a', '#f24249', '#a7050e', '#760207'];
-	var init_position = dustTV.dustPanel.circle_position(0);
-	var circle_panel_width = 450;
-	var scaleX = d3.scale.linear()
-				 .range([0, circle_panel_width])
-				 .domain([100, 0]);
-	var axisX = d3.svg.axis()
-      			.scale(scaleX)
-				.orient("left")
-      			.ticks(10);
-
-    var circle_svg = d3.select('#circle-axis').append("svg")
-
-
-    circle_svg.append('g')
-    		  .call(axisX)
-    		  .attr({
-		        'fill':'none',
-		        'stroke':'#000',
-		        // 'transform':'translate(' + (width * 0.4 - 28) + ',' + (height * 0.2 + 20) + ')'
-		        'transform':'translate(' + (init_position.x - 14) + ',' + (init_position.y - circle_panel_width + 14) + ')'
-		      });
-	circle_svg.append("text").text("pm2.5")
-			  .attr({ 'transform':'translate(' + (init_position.x - 14) + ',' + (init_position.y + 28) + ')' });
-	circle_svg.append("text").text("pm10")
-			  .attr({ 'transform':'translate(' + (init_position.x - 14 + 70) + ',' + (init_position.y + 14) + ')' });
-	circle_svg.append("text").text("花粉")
-			  .attr({ 'transform':'translate(' + (init_position.x - 14 + 160) + ',' + (init_position.y ) + ')' });
-	circle_svg.append("text").text("沙粒")
-			  .attr({ 'transform':'translate(' + (init_position.x - 14 + 480) + ',' + (init_position.y) + ')' });
-
     var longChartSVG = d3.select('#long-chart')
     					 .append('g')
     					 .attr( 'transform', 'translate(' + width * 0.45 + ',' + height * 0.2 + ')');
 
     var object_range = objectRange( pm25 );
     var color = d3.scale.linear().domain( object_range ).range( purple_alert );
+
+    add_description_on_circle( dustTV.dustPanel.circle_position(0) );
 
     d3.csv("data/pm2.5/2015pm2.5年均值.csv", function(data){
     	var rectMaxWidth = width * 0.4;
