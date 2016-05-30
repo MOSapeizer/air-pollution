@@ -83,10 +83,13 @@ svg {
 	color: white;
 }
 
+.header .title {
+	width: auto;
+}
 
 .header	.title .bottom-line {
 	background-color: white;
-	width: 11em;
+	width: 100%;
 	height: 1em;
 }
 
@@ -120,7 +123,7 @@ svg {
 .content #gif-wall {
 	box-sizing: border-box;
 	width: 100%;
-	padding-top: 2em;
+	padding-top: 2.25em;
 	padding-left: 30%;
 }
 
@@ -142,11 +145,7 @@ svg {
 	display: inline-block;
 	padding-left: 5%;
 	width: 40%;
-	height: 30%;
-}
-
-.content #gif-wall img:nth-child(even) {
-	
+	height: 33.33333%;
 }
 
 .content #hollow-man {

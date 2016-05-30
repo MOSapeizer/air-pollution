@@ -206,7 +206,7 @@ $(document).ready(function(){
 				"fill": function(d){ return color( d.concentration ); }
 			}).on("mouseover", function(d){ 
 				info_box.select("h3").text(d.properties.C_Name);
-				info_box.select("p").text(d.concentration);
+				info_box.select("p").text(d.concentration + " μg/m3");
 				d3.select(this).attr({ "stroke": "white", "stroke-width": "4" });
 			}).on("mouseleave", function(d){
 				d3.select(this).attr("stroke", "none");
