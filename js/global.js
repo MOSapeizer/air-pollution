@@ -1,5 +1,7 @@
 var opening_id;
 var images_index = 2;
+var width;
+var height;
 var pm25 = {
 	"雲林縣": 32.3,
 	"嘉義市": 30.5,

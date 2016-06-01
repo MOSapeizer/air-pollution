@@ -18,10 +18,10 @@ var opening_animation = function(){
 opening_id = opening_animation();
 
 $(document).ready(function(){
-  	var $window = $(window);
-  	var $animation_view = $('.content');
-	var width = $(".page").width();
-	var height = $(".page").height();
+	width = $(".page").width();
+	height = $(".page").height();
+    var $window = $(window);
+    var $animation_view = $('.content');
 	var taiwan = d3.select("svg").append("g");
   	var info_box = d3.select("#info-box");
   	var dustTV = new DustAnimationControl(width, height);
@@ -78,7 +78,7 @@ $(document).ready(function(){
     					 .attr( 'transform', 'translate(' + width * 0.45 + ',' + height * 0.2 + ')');
 
     var object_range = objectRange( pm25 );
-    var color = d3.scale.linear().domain( object_range ).range( purple_alert );
+    var color = d3.scale.quantile().domain( object_range ).range( color_range );
 
     add_description_on_circle( dustTV.dustPanel.circle_position(0) );
 
@@ -181,16 +181,22 @@ $(document).ready(function(){
 
 	});
 
-	d3.csv("data/pm2.5/手自動監測.csv", function(data){
-    	var lineChartWidth = width * 0.4;
+    var type = function(d){
+        d.year = d.year + "年"
+        return d;
+    }
+
+	d3.csv("data/pm2.5/手自動監測.csv", type, function(data){
+    	var lineChartWidth = width * 0.45;
     	var lineChartHeight = height * 0.2;
 		var lineChartSVG = d3.select('#line-chart').append('g')
-    						 .attr( 'transform', 'translate(' + lineChartWidth + ',' + lineChartHeight + ')');
-    	var domain_x = d3.extent(data, function(d){ return d.year });
+    						 .attr( 'transform', 'translate(' + width * 0.4 + ',' + lineChartHeight + ')');
+    	var domain_x = data.map(function(d){ return d.year; });
+        console.log(domain_x);
     	var text_offset = lineChartWidth / (data.length-1)  / 2;
 		var chart_height = height * 0.3;
-		var scaleX = d3.scale.linear()
-    						 .range([0, lineChartWidth])
+		var scaleX = d3.scale.ordinal()
+    						 .rangePoints([0, lineChartWidth])
     						 .domain(domain_x);
     	var scaleY = d3.scale.linear()
     						 .range([chart_height, 0])
@@ -225,7 +231,7 @@ $(document).ready(function(){
     				.attr("d", line)
     				.attr("transform", 'translate(' + text_offset + ', 0)');
 
-    	var text_description_offset = (scaleX(domain_x[1]) + text_offset);
+    	var text_description_offset = (scaleX(domain_x[domain_x.length -1]) + text_offset);
 
     	line_group.append("text")
     				.attr("transform", 'translate(' + text_description_offset + ', ' + scaleY(30) + ')')

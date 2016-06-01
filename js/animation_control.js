@@ -29,14 +29,15 @@ var DustFloat = function(width, height, total){
 
 var DustCircle = function(width, height, total){
 	var DEFAULT_CIRCLE_SIZE = 10;
-	var CIRCLE = circleGroup(width / 3, height * 0.7);
+	var SCALE = 0.8;
+	var CIRCLE = circleGroup(width * 0.4, height * 0.7, SCALE);
 	this.group = [];
 
 	for (var i = 0; i < total ; i++) {
 		var circle = CIRCLE(i);
 		var x = circle.x;
 		var y = circle.y;
-		var r = DEFAULT_CIRCLE_SIZE;
+		var r = DEFAULT_CIRCLE_SIZE * SCALE;
 		var dust = new Dust(x, y, r);
 		this.group.push( dust );
 	}
