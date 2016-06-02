@@ -167,7 +167,7 @@ svg {
 .content #gif-wall {
 	width: 100%;
 	padding-top: 2em;
-	padding-left: 40%;
+	padding-left: 35%;
 	position: fixed;
 	z-index: 4;
 	top: 0;
@@ -244,6 +244,7 @@ svg {
 	position: fixed;
 	width: 100%;
 	height: 100%;
+	z-index: 10;
 }
 
 .page .content #info-box {
