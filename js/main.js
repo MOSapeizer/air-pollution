@@ -172,10 +172,10 @@ $(document).ready(function(){
 			});
 		}
 
-		d3.select("svg").on("mousemove", function(){
-			fisheye.focus(d3.mouse(this));
-	 	 	update();
-		});
+		// d3.select("svg").on("mousemove", function(){
+		// 	fisheye.focus(d3.mouse(this));
+	 // 	 	update();
+		// });
 
 		update();
 
