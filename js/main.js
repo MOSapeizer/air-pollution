@@ -130,6 +130,18 @@ $(document).ready(function(){
     				'fill': 'red'
     			});
 
+        longChartSVG.append("text")
+                .attr({
+                    'x': whoX -30,
+                    'y': -6,
+                }).text("WHO標準");
+
+        longChartSVG.append("text")
+                .attr({
+                    'x': taiwanX - 30,
+                    'y': -6,
+                }).text("台灣標準");
+
     	longChartSVG.append("path")
     			.attr({
     				'd': draw_line(taiwan_line),
@@ -172,17 +184,12 @@ $(document).ready(function(){
 			});
 		}
 
-		// d3.select("svg").on("mousemove", function(){
-		// 	fisheye.focus(d3.mouse(this));
-	 // 	 	update();
-		// });
-
 		update();
 
 	});
 
     var type = function(d){
-        d.year = d.year + "年"
+        d && (d.year = d.year + "年");
         return d;
     }
 
@@ -247,6 +254,141 @@ $(document).ready(function(){
     			  .attr("cy", scaleY(23.5))
     			  .attr("class", "manual-point");
 	});
+
+
+    var formatDate = d3.time.format("%Y-%m-%d");
+
+    var time_filter = function(obj){
+       obj.PublishTime = obj.PublishTime.split(" ")[0];
+       obj.PM = +obj.PM;
+       return obj;
+    }
+
+    var countify = function(elem){
+        if( this[elem.County] == undefined )
+            this[elem.County] = [elem];
+        else
+            this[elem.County].push(elem);
+    }
+
+    var weekify = function(elem){
+        if( this[elem.PublishTime] == undefined )
+            this[elem.PublishTime] = { total: 1, data: elem.PM };
+        else{
+            this[elem.PublishTime].data += elem.PM;
+            this[elem.PublishTime].total += 1;
+        }
+    }
+
+    var time_sort = function(x, y){
+        return d3.ascending(x.PublishTime, y.PublishTime);
+    }
+
+    d3.json("data/2014-filter.json", function(data){
+        var county = {};
+        test_data = data.map( time_filter );
+        test_data.forEach(countify.bind(county));
+        var five_zone = {};
+        var offset_x = width * 0.4;
+        var offset_y = height * 0.2;
+        for( var c in county ){
+            var c_daily_buff = {};
+            var c_daily_data = [];
+            county[c].forEach(weekify.bind(c_daily_buff));
+            for( var property in c_daily_buff ){
+                c_daily_data.push({ PublishTime: formatDate.parse(property), PM: (c_daily_buff[property].data / c_daily_buff[property].total) });
+            }
+            five_zone[c] = c_daily_data;
+        }
+        var lineChartWidth = width * 0.45;
+        var lineChartHeight = height * 0.5;
+        var lineChartSVG = d3.select('#compare-chart').append('g');
+
+        var x = d3.time.scale()
+            .domain([new Date(2014, 1, 1), new Date(2014, 11, 31)])
+            .range([0, lineChartWidth]);
+
+        var y = d3.scale.linear()
+            .domain([0, 100])
+            .range([400, 0]);
+
+        var xAxis = d3.svg.axis()
+            .scale(x)
+            .orient("bottom")
+            .ticks(d3.time.months)
+            .tickFormat( d3.time.format("%b") );
+
+        var yAxis = d3.svg.axis()
+            .scale(y)
+            .orient("left");
+
+        var line = d3.svg.line()
+            .interpolate("basis")
+            .x(function(d) { return x(d.PublishTime); })
+            .y(function(d) { return y(d.PM); });
+
+        lineChartSVG.append("g")
+            .attr( "class", "x axis" )
+            .attr( 'transform', 'translate(' + offset_x + ',' + 650 + ')')
+            .call( xAxis );
+
+        lineChartSVG.append("g")
+            .attr("class", "y axis")
+            .attr( 'transform', 'translate(' + offset_x + ',' + 250 + ')')
+            .call(yAxis)
+            .append("text")
+            .attr("transform", "rotate(-90)")
+            .attr("y", 6)
+            .attr("dy", ".71em")
+            .style("text-anchor", "end")
+            .text("PM");
+
+        var c10 = d3.scale.category10();
+        var index = 0;
+        for( var county in five_zone ){
+            var daily_county = five_zone[county];
+            var week_county = data_group_by_week( daily_county ).sort(time_sort);
+            draw_line( county ,week_county, c10(index++));   
+        }
+
+        function data_group_by_week(data) {
+            var week = d3.time.format("%U");
+            var nest = d3.nest().key(function (d) { return week(new Date(d.PublishTime));})
+                                .sortKeys(d3.ascending)
+                                .entries(data);
+            var group = nest.map(average_week_data);
+            return group;
+        }
+
+        function average_week_data(object){
+            var value = 0;
+            object.values.forEach(function(v){
+                value += v.PM;
+            });
+            return { PM: value / object.values.length
+                   , PublishTime: object.values[0].PublishTime }
+        }
+        
+        function draw_line( label, data, color ){
+            var text_x =  x(data[data.length -1].PublishTime);
+            var text_y =  y(data[data.length -1].PM);
+
+            lineChartSVG.append( "path" )
+            .attr( 'transform', 'translate(' + width * 0.4 + ',' + 275 + ')')
+            .datum( data )
+            .attr( "class", "line" )
+            .attr( "d", line )
+            .attr( "stroke", color );
+
+            lineChartSVG.append("text")
+            .attr("transform", "translate(" + (width * 0.4 + 3 + text_x) + "," + (text_y + 275) + ")")
+            .attr("dy", ".35em")
+            .attr("text-anchor", "start")
+            .style("fill", color)
+            .text(label);
+        }
+
+    });
 });
 
 

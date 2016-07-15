@@ -1,4 +1,7 @@
 var opening_id;
+var test_data;
+var county = {};
+var weekly_buff = {};
 var images_index = 2;
 var width;
 var height;
@@ -32,13 +35,13 @@ var add_description_on_circle = function(point){
 
 	var append_circle_text = function(value, offset){
 		var transition = transition_with_offset(circle_zero, offset);
-		append_text.call(circle_svg, "PM10.5", transition);
+		append_text.call(circle_svg, value, transition);
 	}
 	append_y_axis.call(circle_svg, circle_zero, circle_panel_width);
 	append_circle_text("PM2.5");
-	append_circle_text("PM10", {x: 70});
-	append_circle_text("花粉", {x: 150});
-	append_circle_text("沙粒", {x: 470});
+	append_circle_text("PM10", {x: 60, y: -20});
+	append_circle_text("花粉", {x: 130, y: -30});
+	append_circle_text("沙粒", {x: 380, y: -30});
 }
 
 var append_y_axis = function(point, height){
@@ -50,7 +53,13 @@ var append_y_axis = function(point, height){
 	axis_y_transition = transition_with_offset(point, {x: -5, y: -height});
 	this.append('g').call(axisY)
     	.attr({ 'fill':'none', 'stroke':'#000',
-		        'transform': axis_y_transition});
+		        'transform': axis_y_transition})
+    	.append("text")
+    	.attr("transform", "rotate(-90)")
+        .attr("y", 6)
+        .attr("dy", ".71em")
+        .style("text-anchor", "end")
+        .text("microgram/m3");
 }
 
 var append_text = function(name, transition){ 	

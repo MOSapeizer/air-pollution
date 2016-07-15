@@ -86,19 +86,24 @@ svg {
 }
 
 .color-bar {
-	width: 20em;
-	background-color: white;
-	bottom: 15%;
+	bottom: 25%;
 	box-sizing: border-box;
 	position: fixed;
 	right: 5%;
 	height: 2em;
 }
 
+.color-bar .color-bar-header {
+	display: relative;
+	line-height: 16px;
+	box-sizing: border-box;
+	margin-bottom: -0.5em;
+}
+
 .color-bar .unit {
-	width: 3em;
+	width: 48px;
 	height: inherit;
-	display: inline-block;
+	float: left;
 	border-right: 2px solid black;
 }
 
@@ -109,6 +114,38 @@ svg {
 .color-bar .level-1{
 	background-color: #fef0d9;
 }
+
+.color-bar .level-1:after,
+.color-bar .level-2:after,
+.color-bar .level-3:after,
+.color-bar .level-4:after,
+.color-bar .level-5:after {
+	line-height: 20px;
+	margin-top: 2.2em;
+	margin-left: 40px;
+	display: block;
+}
+
+.color-bar .level-1:after {
+	content: "10";	
+}
+
+.color-bar .level-2:after {
+	content: "15\AUnhealthy";
+}
+
+.color-bar .level-3:after {
+	content: "20";
+}
+
+.color-bar .level-4:after {
+	content: "25";
+}
+
+.color-bar .level-5:after {
+	content: "300\AHazardous";
+}
+
 /*,#fdba57,#fda38a, #f24249, #a7050e, #760207*/
 .color-bar .level-2{
 	background-color: #fdba57;
@@ -128,12 +165,6 @@ svg {
 
 .header .title {
 	width: auto;
-}
-
-.header	.title .bottom-line {
-	background-color: white;
-	width: 100%;
-	height: 1em;
 }
 
 .page .content {
@@ -270,7 +301,7 @@ svg {
 	z-index: 9;
 }
 
-#line-chart .axis {
+#line-chart .axis, #compare-chart .axis {
 	fill: none;
 	stroke: #000;
 }
@@ -285,6 +316,20 @@ svg {
 	stroke-width: 1.5px;
 }
 
+#compare-chart .line {
+	fill: none;
+	stroke-width : 1.5px;
+}
+
+#compare-chart .line {
+	fill: none;
+	stroke-width : 1.5px;
+}
+
+#compare-chart .x text {
+	text-anchor: initial !important;
+}
+
 #line-chart text {
 	font-size: small;
 }
@@ -294,13 +339,12 @@ svg {
 }
 
 #opening {
-
 	display: none;
 	pointer-events: none;
 	position: fixed;
 	width: 100%;
 	height: 100%;
-	z-index: 10;
+	z-index: 20;
 }
 
 #opening img {
